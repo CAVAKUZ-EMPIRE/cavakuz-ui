@@ -2,7 +2,7 @@ import axios, { type AxiosError } from 'axios'
 
 const TOKEN_KEY = 'cavakuz-token'
 const USER_KEY = 'cavakuz-user'
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://cavakuz-api-production-2culje.laravel.cloud/api'
+const API_BASE_URL = 'https://cavakuz-api-production-2culje.laravel.cloud/api'
 
 export const storage = {
   getToken() {
