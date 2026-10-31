@@ -90,7 +90,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="panel payment-panel">
-              <PanelHeading title="Payment health" subtitle="Outstanding vs completed" />
+              <PanelHeading title="Payment Status" subtitle="Outstanding vs completed" />
               <div className="summary-stack">
                 <div className="summary-card highlight">
                   <span>Pending payments</span>
