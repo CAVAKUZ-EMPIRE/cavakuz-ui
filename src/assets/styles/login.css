@@ -1,0 +1,676 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+.cavakuz-page {
+  --cav-blue: #315cf5;
+  --cav-navy: #111a35;
+  --cav-muted: #777f91;
+
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #f2f4f9;
+  color: var(--cav-navy);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 730px;
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  overflow: hidden;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 24px 80px rgba(26, 39, 75, 0.11);
+}
+
+/* Brand panel */
+
+.login-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 43px 48px 30px;
+  overflow: hidden;
+  color: white;
+  background:
+    radial-gradient(ellipse at 80% 55%, rgba(49, 92, 245, .28), transparent 45%),
+    #111a35;
+}
+
+.cavakuz-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  width: fit-content;
+  color: inherit;
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.logo-symbol {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: white;
+  background: var(--cav-blue);
+}
+
+.brand-main {
+  margin: 65px 0 30px;
+}
+
+.brand-label,
+.form-overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.brand-label {
+  color: #c5cbe0;
+}
+
+.label-dot,
+.security-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f6a45d;
+}
+
+.brand-main h1 {
+  margin: 24px 0 17px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(42px, 4.3vw, 57px);
+  font-weight: 800;
+  line-height: 1.13;
+  letter-spacing: -2.5px;
+}
+
+.brand-main h1 span {
+  color: #829cff;
+}
+
+.brand-description {
+  max-width: 360px;
+  color: #bdc5db;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+/* Decorative print artwork */
+
+.design-art {
+  position: relative;
+  height: 225px;
+  margin: 17px 0 10px;
+}
+
+.art-paper {
+  position: absolute;
+  width: 170px;
+  height: 205px;
+  border-radius: 7px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .22);
+}
+
+.paper-back {
+  left: 19%;
+  top: 10px;
+  transform: rotate(-13deg);
+  background: #f7aa70;
+}
+
+.paper-middle {
+  left: 27%;
+  top: 5px;
+  transform: rotate(10deg);
+  background: #d9e0ff;
+}
+
+.paper-circle {
+  width: 80px;
+  height: 80px;
+  margin: 25px auto 15px;
+  border-radius: 50%;
+  background: #f0a16d;
+}
+
+.paper-line {
+  height: 6px;
+  width: 110px;
+  margin: 10px auto;
+  border-radius: 8px;
+  background: #9aa8e9;
+}
+
+.paper-line.small {
+  width: 70px;
+  margin-left: 30px;
+}
+
+.paper-front {
+  left: 37%;
+  top: 5px;
+  z-index: 2;
+  overflow: hidden;
+  transform: rotate(-5deg);
+  padding: 13px;
+  background: #fffaf2;
+  color: #182143;
+}
+
+.art-label {
+  position: relative;
+  z-index: 3;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.art-circle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.art-circle.blue {
+  width: 85px;
+  height: 85px;
+  top: 33px;
+  right: -17px;
+  background: #4267fa;
+}
+
+.art-circle.orange {
+  width: 56px;
+  height: 56px;
+  top: 68px;
+  left: 18px;
+  background: #f69c63;
+}
+
+.art-circle.purple {
+  width: 36px;
+  height: 36px;
+  top: 101px;
+  right: 25px;
+  background: #a6a6e9;
+}
+
+.art-heading {
+  position: absolute;
+  bottom: 28px;
+  left: 15px;
+  z-index: 3;
+  font-family: 'Manrope', sans-serif;
+  font-size: 23px;
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.art-footer-line {
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+  width: 75px;
+  height: 3px;
+  background: #315cf5;
+}
+
+.art-badge {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 11px;
+  background: #222d4b;
+  color: #f7f8ff;
+  font-size: 11px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+}
+
+.badge-top {
+  top: 23px;
+  right: 1%;
+}
+
+.badge-bottom {
+  left: 2%;
+  bottom: 14px;
+}
+
+.brand-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  color: #c6cde0;
+  font-size: 11px;
+}
+
+.brand-benefits span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.brand-benefits svg {
+  color: #93a8ff;
+}
+
+.brand-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 25px;
+  color: #929dbb;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.color-strip {
+  display: flex;
+  gap: 3px;
+}
+
+.color-strip i {
+  display: block;
+  width: 11px;
+  height: 4px;
+  border-radius: 2px;
+  background: #00b9e8;
+}
+
+.color-strip i:nth-child(2) {
+  background: #d64ab9;
+}
+
+.color-strip i:nth-child(3) {
+  background: #f5c344;
+}
+
+.color-strip i:nth-child(4) {
+  background: #f66c51;
+}
+
+/* Login form */
+
+.login-form-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px clamp(32px, 5vw, 76px) 28px;
+  background: #fff;
+}
+
+.login-form-content {
+  width: 100%;
+  max-width: 365px;
+  margin: auto;
+}
+
+.form-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 51px;
+  height: 51px;
+  margin-bottom: 28px;
+  border: 1px solid #e8ecfa;
+  border-radius: 15px;
+  background: #f2f5ff;
+  color: var(--cav-blue);
+}
+
+.form-overline {
+  color: #8790a3;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+}
+
+.login-form-content h2 {
+  margin: 12px 0 8px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 35px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.login-form-content h2 span {
+  color: var(--cav-blue);
+}
+
+.form-description {
+  margin-bottom: 34px;
+  color: var(--cav-muted);
+  font-size: 13px;
+}
+
+.login-form-content .form-label {
+  margin-bottom: 9px;
+  color: #28324b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cavakuz-input {
+  min-height: 49px;
+  padding: 12px 14px;
+  border: 1px solid #e0e4ed;
+  border-radius: 9px;
+  background-color: #fcfcfe;
+  color: #182143;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  box-shadow: none;
+}
+
+.cavakuz-input::placeholder {
+  color: #a5abba;
+}
+
+.cavakuz-input:focus {
+  border-color: #7792ff;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(49, 92, 245, .09);
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper .cavakuz-input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  display: flex;
+  padding: 3px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #8992a5;
+}
+
+.password-toggle:hover {
+  color: var(--cav-blue);
+}
+
+.auth-mode-toggle {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  margin: 22px 0 16px;
+  border: 1px solid #edf1fb;
+  border-radius: 12px;
+  background: #f7f9ff;
+}
+
+.auth-mode-toggle button,
+.role-selector button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.auth-mode-toggle button {
+  flex: 1;
+  min-height: 40px;
+  background: transparent;
+  color: #65728d;
+}
+
+.auth-mode-toggle button.active {
+  background: white;
+  color: var(--cav-blue);
+  box-shadow: 0 5px 12px rgba(23, 42, 86, 0.08);
+}
+
+.role-selector {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.role-selector button {
+  flex: 1;
+  min-height: 42px;
+  background: #f2f5ff;
+  color: #2a3c5f;
+}
+
+.role-selector button.selected {
+  background: linear-gradient(135deg, #315cf5, #2248d1);
+  color: white;
+  box-shadow: 0 8px 18px rgba(49, 92, 245, 0.2);
+}
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 19px 0 26px;
+  font-size: 11px;
+}
+
+.remember-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #616b80;
+  cursor: pointer;
+}
+
+.remember-option input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--cav-blue);
+}
+
+.login-options a,
+.login-options span {
+  color: var(--cav-blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-options a:hover {
+  text-decoration: underline;
+}
+
+.cavakuz-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 51px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--cav-blue);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 7px 17px rgba(49, 92, 245, .19);
+  transition: background .2s, transform .2s;
+}
+
+.cavakuz-submit:hover {
+  transform: translateY(-1px);
+  background: #2448d5;
+}
+
+.cavakuz-submit:focus-visible,
+.password-toggle:focus-visible {
+  outline: 3px solid #a8b8ff;
+  outline-offset: 3px;
+}
+
+.security-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 27px;
+  color: #8c94a5;
+  font-size: 10px;
+  text-align: center;
+}
+
+.security-dot {
+  width: 6px;
+  height: 6px;
+  background: #37b780;
+}
+
+.login-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 28px;
+  color: #9aa1b0;
+  font-size: 10px;
+}
+
+.mobile-logo {
+  display: none;
+}
+
+/* Responsive layout */
+
+@media (max-width: 1000px) {
+  .cavakuz-page {
+    padding: 18px;
+  }
+
+  .login-container {
+    min-height: 690px;
+  }
+
+  .login-brand {
+    padding: 34px 30px 25px;
+  }
+
+  .login-form-panel {
+    padding: 38px 30px 24px;
+  }
+
+  .brand-main {
+    margin-top: 50px;
+  }
+
+  .brand-main h1 {
+    font-size: 44px;
+  }
+
+  .design-art {
+    transform: scale(.9);
+    transform-origin: left center;
+    margin-right: -25px;
+  }
+}
+
+@media (max-width: 700px) {
+  .cavakuz-page {
+    display: block;
+    padding: 0;
+    background: white;
+  }
+
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .login-brand {
+    display: none;
+  }
+
+  .login-form-panel {
+    flex: 1;
+    justify-content: flex-start;
+    padding: 28px 25px 20px;
+  }
+
+  .mobile-logo {
+    display: inline-flex;
+    margin-bottom: 54px;
+    color: var(--cav-navy);
+  }
+
+  .mobile-logo .logo-symbol {
+    width: 39px;
+    height: 39px;
+  }
+
+  .login-form-content {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .form-logo {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 22px;
+  }
+
+  .login-form-content h2 {
+    font-size: 32px;
+  }
+
+  .form-description {
+    margin-bottom: 30px;
+  }
+
+  .login-footer {
+    max-width: 440px;
+    width: 100%;
+    margin: auto auto 0;
+    padding-top: 48px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-form-panel {
+    padding-right: 19px;
+    padding-left: 19px;
+  }
+
+  .login-options {
+    font-size: 10px;
+  }
+}
