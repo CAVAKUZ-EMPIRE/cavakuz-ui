@@ -50,7 +50,7 @@ export default function SaleReceiptPage() {
             </div>
             <div className="receipt-line">
               <span>Customer</span>
-              <strong>{receipt.customer?.name ?? '—'}</strong>
+              <strong>{receipt.customer?.name ?? receipt.customer_name ?? '—'}</strong>
             </div>
             <div className="receipt-line">
               <span>Date</span>
@@ -60,12 +60,17 @@ export default function SaleReceiptPage() {
               <span>Payment</span>
               <strong>{prettyLabel(receipt.payment_method)}</strong>
             </div>
-            {(receipt.items ?? []).map((item) => (
-              <div className="receipt-line" key={item.id}>
-                <span>{item.inventory?.name ?? `Item #${item.inventory_id}`} × {item.quantity}</span>
-                <strong>{money(item.total_price)}</strong>
-              </div>
-            ))}
+            {(receipt.items ?? []).map((item) => {
+              const label = item.product?.name ?? item.inventory?.name ?? `Item #${item.product_id ?? item.inventory_id ?? item.id}`
+              const lineTotal = item.total_price ?? item.subtotal ?? item.quantity * item.unit_price
+
+              return (
+                <div className="receipt-line" key={item.id}>
+                  <span>{label} × {item.quantity}</span>
+                  <strong>{money(lineTotal)}</strong>
+                </div>
+              )
+            })}
             <div className="receipt-line total">
               <span>Total</span>
               <strong>{money(receipt.total_amount)}</strong>

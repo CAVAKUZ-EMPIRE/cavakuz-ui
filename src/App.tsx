@@ -11,6 +11,9 @@ import InventoryListPage from './pages/inventory/InventoryListPage.tsx'
 import InventoryShowPage from './pages/inventory/InventoryShowPage.tsx'
 import Notfound from './pages/notfound.tsx'
 import NotificationsPage from './pages/notifications/NotificationsPage.tsx'
+import ProductFormPage from './pages/products/ProductFormPage.tsx'
+import ProductListPage from './pages/products/ProductListPage.tsx'
+import ProductShowPage from './pages/products/ProductShowPage.tsx'
 import FinancialReportPage from './pages/reports/FinancialReportPage.tsx'
 import SaleCreatePage from './pages/sales/SaleCreatePage.tsx'
 import SaleReceiptPage from './pages/sales/SaleReceiptPage.tsx'
@@ -44,6 +47,11 @@ function App() {
         <Route path="/inventory/new" element={<InventoryFormPage />} />
         <Route path="/inventory/:id" element={<InventoryShowPage />} />
         <Route path="/inventory/:id/edit" element={<InventoryFormPage />} />
+
+        <Route path="/products" element={<ProductListPage />} />
+        <Route path="/products/new" element={<ProductFormPage />} />
+        <Route path="/products/:id" element={<ProductShowPage />} />
+        <Route path="/products/:id/edit" element={<ProductFormPage />} />
 
         <Route path="/sales" element={<SalesListPage />} />
         <Route path="/sales/new" element={<SaleCreatePage />} />

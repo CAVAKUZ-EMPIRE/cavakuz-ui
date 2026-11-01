@@ -6,6 +6,7 @@ import { Alert, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { Customer } from '../../types'
+import UniversalButton from '../../components/UniversalButton'
 
 export default function CustomerShowPage() {
   const { id } = useParams()
@@ -46,7 +47,7 @@ export default function CustomerShowPage() {
         customer ? (
           <div className="action-row">
             <Link to={`/customers/${customer.id}/edit`} className="primary-button">Edit</Link>
-            <button type="button" className="secondary-button" onClick={() => void handleDelete()}>Delete</button>
+            <button type="button" className="btn btn-danger" onClick={() => void handleDelete()}>Delete</button>
           </div>
         ) : undefined
       }
@@ -55,6 +56,8 @@ export default function CustomerShowPage() {
       {loading || !customer ? (
         <LoadingState />
       ) : (
+        <>
+        <UniversalButton />
         <section className="module-grid">
           <div className="panel module-panel">
             <div className="customer-cell" style={{ marginBottom: 22 }}>
@@ -81,6 +84,7 @@ export default function CustomerShowPage() {
             <Link to="/customers" className="secondary-button" style={{ marginTop: 16 }}>Back to list</Link>
           </div>
         </section>
+        </>
       )}
     </AppShell>
   )

@@ -7,6 +7,7 @@ import type {
   FinancialMonth,
   InventoryItem,
   NotificationItem,
+  Product,
   Sale,
   SaleReceipt,
   Task,
@@ -106,6 +107,36 @@ export const inventoryApi = {
   },
 }
 
+export const productsApi = {
+  list: async () => {
+    const { data } = await api.get('/products')
+    return unwrapList<Product>(data)
+  },
+  get: async (id: string | number) => {
+    const { data } = await api.get(`/products/${id}`)
+    return unwrapData<Product>(data)
+  },
+  create: async (payload: {
+    name: string
+    category: string
+    unit_price_plain: number
+    unit_price_branded?: number | null
+    stock_quantity: number
+    unit_type: string
+    is_active?: boolean
+  }) => {
+    const { data } = await api.post('/products', payload)
+    return unwrapData<Product>(data)
+  },
+  update: async (id: string | number, payload: Partial<Product>) => {
+    const { data } = await api.put(`/products/${id}`, payload)
+    return unwrapData<Product>(data)
+  },
+  remove: async (id: string | number) => {
+    await api.delete(`/products/${id}`)
+  },
+}
+
 export const salesApi = {
   list: async () => {
     const { data } = await api.get('/sales')
@@ -116,11 +147,21 @@ export const salesApi = {
     return unwrapData<Sale>(data)
   },
   create: async (payload: {
-    customer_id: number
-    payment_method: string
-    payment_status: string
+    invoice_number?: string
+    customer_id?: number | null
+    customer_name?: string | null
+    payment_method?: string
+    payment_status?: string
+    status?: string
     notes?: string | null
-    items: Array<{ inventory_id: number; quantity: number }>
+    items: Array<{
+      product_id?: number
+      inventory_id?: number
+      item_type?: string
+      quantity: number
+      unit_price?: number
+      attributes?: Record<string, unknown>
+    }>
   }) => {
     const { data } = await api.post('/sales', payload)
     return unwrapData<Sale>(data)

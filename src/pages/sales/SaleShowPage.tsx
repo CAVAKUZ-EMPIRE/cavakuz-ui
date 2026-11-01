@@ -41,7 +41,7 @@ export default function SaleShowPage() {
             <div className="summary-stack">
               <div className="summary-card highlight">
                 <span>Customer</span>
-                <strong>{sale.customer?.name ?? `#${sale.customer_id}`}</strong>
+                <strong>{sale.customer?.name ?? sale.customer_name ?? `#${sale.customer_id ?? '—'}`}</strong>
               </div>
               <div className="summary-card">
                 <span>Total</span>
@@ -49,23 +49,28 @@ export default function SaleShowPage() {
               </div>
               <div className="summary-card">
                 <span>Payment</span>
-                <strong>{prettyLabel(sale.payment_method)}</strong>
+                <strong>{prettyLabel(sale.payment_method ?? sale.payment_status ?? 'pending')}</strong>
               </div>
             </div>
-            <p style={{ marginTop: 16 }}><StatusPill value={sale.payment_status} /> · {formatDate(sale.transaction_date)}</p>
+            <p style={{ marginTop: 16 }}><StatusPill value={sale.payment_status ?? sale.status ?? 'pending'} /> · {formatDate(sale.transaction_date ?? sale.created_at ?? '')}</p>
             {sale.notes && <p>{sale.notes}</p>}
           </div>
           <div className="panel module-panel">
             <div className="inventory-list">
-              {(sale.items ?? []).map((item) => (
-                <div className="inventory-item" key={item.id}>
-                  <div>
-                    <strong>{item.inventory?.name ?? `Item #${item.inventory_id}`}</strong>
-                    <small>{item.quantity} × {money(item.unit_price)}</small>
+              {(sale.items ?? []).map((item) => {
+                const label = item.product?.name ?? item.inventory?.name ?? `Item #${item.product_id ?? item.inventory_id ?? item.id}`
+                const lineTotal = item.total_price ?? item.subtotal ?? item.quantity * item.unit_price
+
+                return (
+                  <div className="inventory-item" key={item.id}>
+                    <div>
+                      <strong>{label}</strong>
+                      <small>{item.quantity} × {money(item.unit_price)}</small>
+                    </div>
+                    <strong>{money(lineTotal)}</strong>
                   </div>
-                  <strong>{money(item.total_price)}</strong>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>
