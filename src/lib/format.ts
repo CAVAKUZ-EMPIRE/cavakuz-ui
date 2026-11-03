@@ -26,6 +26,35 @@ export const prettyLabel = (value?: string | null) =>
 export const statusClass = (value?: string | null) =>
   (value ?? 'pending').toLowerCase().replaceAll('_', '-').replaceAll(' ', '-')
 
+export const sumSaleItems = (
+  items?: Array<{
+    quantity?: number | string | null
+    unit_price?: number | string | null
+    subtotal?: number | string | null
+    total_price?: number | string | null
+  }> | null,
+) =>
+  (items ?? []).reduce((sum, item) => {
+    const quantity = Number(item.quantity ?? 0)
+    const unitPrice = Number(item.unit_price ?? 0)
+    const lineTotal = Number(item.total_price ?? item.subtotal ?? (quantity * unitPrice || 0))
+    return sum + lineTotal
+  }, 0)
+
+export const saleTotal = (sale?: {
+  total_amount?: number | string | null
+  items?: Array<{
+    quantity?: number | string | null
+    unit_price?: number | string | null
+    subtotal?: number | string | null
+    total_price?: number | string | null
+  }> | null
+} | null) => {
+  const computedTotal = sumSaleItems(sale?.items ?? [])
+  const providedTotal = Number(sale?.total_amount ?? 0)
+  return computedTotal > 0 ? computedTotal : providedTotal
+}
+
 export const initials = (name?: string | null) =>
   (name ?? 'NA')
     .split(' ')

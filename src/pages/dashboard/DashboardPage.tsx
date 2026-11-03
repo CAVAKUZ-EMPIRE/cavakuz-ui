@@ -6,7 +6,7 @@ import { useAuth } from '../../auth/AuthContext'
 import AppShell from '../../components/AppShell'
 import { Alert, EmptyState, LoadingState } from '../../components/PageState'
 import StatusPill from '../../components/StatusPill'
-import { formatDate, money } from '../../lib/format'
+import { formatDate, money, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { DashboardSummary, Expense, Task } from '../../types'
 
@@ -78,7 +78,7 @@ export default function DashboardPage() {
                         <small>{formatDate(sale.transaction_date)}</small>
                       </div>
                       <div className="record-amount">
-                        <strong>{money(sale.total_amount)}</strong>
+                        <strong>{money(saleTotal(sale))}</strong>
                         <StatusPill value={sale.payment_status} />
                       </div>
                     </Link>

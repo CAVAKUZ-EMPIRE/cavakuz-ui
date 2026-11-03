@@ -7,6 +7,7 @@ import type {
   FinancialMonth,
   InventoryItem,
   NotificationItem,
+  OutfitSetupOption,
   Product,
   Sale,
   SaleReceipt,
@@ -154,12 +155,15 @@ export const salesApi = {
     payment_status?: string
     status?: string
     notes?: string | null
+    total_amount?: number
     items: Array<{
       product_id?: number
       inventory_id?: number
       item_type?: string
       quantity: number
       unit_price?: number
+      subtotal?: number
+      total_price?: number
       attributes?: Record<string, unknown>
     }>
   }) => {
@@ -169,6 +173,23 @@ export const salesApi = {
   receipt: async (id: string | number) => {
     const { data } = await api.get(`/sales/${id}/receipt`)
     return unwrapData<SaleReceipt>(data)
+  },
+}
+
+export const outfitSetupApi = {
+  list: async () => {
+    const { data } = await api.get('/outfit-setup')
+    return unwrapData<Record<string, OutfitSetupOption[]>>(data)
+  },
+  create: async (payload: Record<string, unknown>) => {
+    const { data } = await api.post('/outfit-setup', payload)
+    return unwrapData<{
+      selection: Record<string, string>
+      base_price: number
+      modifier_total: number
+      total_price: number
+      inventory_item?: { id: number; name: string; unit_price: number }
+    }>(data)
   },
 }
 

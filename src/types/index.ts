@@ -14,9 +14,23 @@ export type Customer = {
   email: string | null
   location: string | null
   company: string | null
+  referrer?: number | null
+  referrer_customer?: Customer | null
   created_at?: string
   updated_at?: string
 }
+
+export type OutfitSetupOption = {
+  id: number
+  field_name: string
+  option_value: string
+  price_modifier: number
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
+export type OutfitSetupGroup = Record<string, OutfitSetupOption[]>
 
 export type InventoryItem = {
   id: number

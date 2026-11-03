@@ -88,28 +88,24 @@ export default function ProductFormPage() {
           <form className="field-form" onSubmit={(event) => void handleSubmit(event)}>
             <div className="field-grid">
               <label>
-                <span>Name</span>
+                <span>product Name</span>
                 <input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} required />
               </label>
 
               <label>
-                <span>Category</span>
+                <span>product Type</span>
                 <select value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}>
                   <option value="designing">Designing</option>
                   <option value="printing">Printing</option>
-                  <option value="paper_job">Paper job</option>
-                  <option value="finishing">Finishing</option>
-                  <option value="large_format">Large format</option>
-                  <option value="souvenir">Souvenir</option>
                 </select>
               </label>
 
-              <label>
+              {/* <label>
                 <span>Plain unit price</span>
                 <input type="number" min={0} step="0.01" value={form.unit_price_plain} onChange={(event) => setForm((current) => ({ ...current, unit_price_plain: event.target.value }))} required />
-              </label>
+              </label> */}
 
-              <label>
+              {/* <label>
                 <span>Branded unit price</span>
                 <input type="number" min={0} step="0.01" value={form.unit_price_branded} onChange={(event) => setForm((current) => ({ ...current, unit_price_branded: event.target.value }))} />
               </label>
@@ -117,9 +113,9 @@ export default function ProductFormPage() {
               <label>
                 <span>Stock quantity</span>
                 <input type="number" min={0} value={form.stock_quantity} onChange={(event) => setForm((current) => ({ ...current, stock_quantity: event.target.value }))} required />
-              </label>
+              </label> */}
 
-              <label>
+              {/* <label>
                 <span>Unit type</span>
                 <select value={form.unit_type} onChange={(event) => setForm((current) => ({ ...current, unit_type: event.target.value }))}>
                   <option value="sheet">Sheet</option>
@@ -127,7 +123,7 @@ export default function ProductFormPage() {
                   <option value="roll">Roll</option>
                   <option value="pack">Pack</option>
                 </select>
-              </label>
+              </label> */}
 
               <label>
                 <span>Active</span>

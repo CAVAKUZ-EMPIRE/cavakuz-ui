@@ -11,6 +11,7 @@ const emptyForm = {
   email: '',
   company: '',
   location: '',
+  referrer: '',
 }
 
 export default function CustomerFormPage() {
@@ -18,12 +19,30 @@ export default function CustomerFormPage() {
   const isEdit = Boolean(id)
   const navigate = useNavigate()
   const [form, setForm] = useState(emptyForm)
+  const [customers, setCustomers] = useState<{ id: number; name: string }[]>([])
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
+    const loadCustomers = async () => {
+      try {
+        const nextCustomers = await customersApi.list()
+        setCustomers(nextCustomers.map(({ id, name }) => ({ id, name })))
+      } catch (err) {
+        setError(getErrorMessage(err))
+      }
+    }
+
+    void loadCustomers()
+  }, [])
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false)
+      return
+    }
+
     const load = async () => {
       try {
         const customer = await customersApi.get(id)
@@ -33,6 +52,7 @@ export default function CustomerFormPage() {
           email: customer.email ?? '',
           company: customer.company ?? '',
           location: customer.location ?? '',
+          referrer: customer.referrer ? String(customer.referrer) : '',
         })
       } catch (err) {
         setError(getErrorMessage(err))
@@ -53,6 +73,7 @@ export default function CustomerFormPage() {
       email: form.email || null,
       company: form.company || null,
       location: form.location || null,
+      referrer: form.referrer ? Number(form.referrer) : null,
     }
 
     try {
@@ -106,6 +127,17 @@ export default function CustomerFormPage() {
               <label>
                 <span>Company</span>
                 <input value={form.company} onChange={(event) => setForm((current) => ({ ...current, company: event.target.value }))} />
+              </label>
+              <label>
+                <span>Referrer</span>
+                <select value={form.referrer} onChange={(event) => setForm((current) => ({ ...current, referrer: event.target.value }))}>
+                  <option value="">No referrer</option>
+                  {customers
+                    .filter((customer) => (!isEdit || String(customer.id) !== id) && String(customer.id) !== form.referrer)
+                    .map((customer) => (
+                      <option key={customer.id} value={customer.id}>{customer.name}</option>
+                    ))}
+                </select>
               </label>
               <label style={{ gridColumn: '1 / -1' }}>
                 <span>Location</span>

@@ -1417,6 +1417,7 @@ button {
 .line-total {
   display: grid;
   gap: 8px;
+  margin: auto;
 }
 
 .line-total span {
