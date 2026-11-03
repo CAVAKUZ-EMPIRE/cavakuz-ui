@@ -6,11 +6,13 @@ import { Alert, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { Customer } from '../../types'
+import UniversalButton from '../../components/UniversalButton'
 
 export default function CustomerShowPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [customer, setCustomer] = useState<Customer | null>(null)
+  const [referrerCustomer, setReferrerCustomer] = useState<Customer | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -18,7 +20,15 @@ export default function CustomerShowPage() {
     if (!id) return
     const load = async () => {
       try {
-        setCustomer(await customersApi.get(id))
+        const nextCustomer = await customersApi.get(id)
+        setCustomer(nextCustomer)
+
+        if (nextCustomer.referrer) {
+          const referrer = await customersApi.get(nextCustomer.referrer)
+          setReferrerCustomer(referrer)
+        } else {
+          setReferrerCustomer(null)
+        }
       } catch (err) {
         setError(getErrorMessage(err))
       } finally {
@@ -46,7 +56,7 @@ export default function CustomerShowPage() {
         customer ? (
           <div className="action-row">
             <Link to={`/customers/${customer.id}/edit`} className="primary-button">Edit</Link>
-            <button type="button" className="secondary-button" onClick={() => void handleDelete()}>Delete</button>
+            <button type="button" className="btn btn-danger" onClick={() => void handleDelete()}>Delete</button>
           </div>
         ) : undefined
       }
@@ -55,6 +65,8 @@ export default function CustomerShowPage() {
       {loading || !customer ? (
         <LoadingState />
       ) : (
+        <>
+        <UniversalButton />
         <section className="module-grid">
           <div className="panel module-panel">
             <div className="customer-cell" style={{ marginBottom: 22 }}>
@@ -69,6 +81,7 @@ export default function CustomerShowPage() {
               <label><span>Email</span><input value={customer.email || '—'} readOnly /></label>
               <label><span>Company</span><input value={customer.company || '—'} readOnly /></label>
               <label><span>Location</span><input value={customer.location || '—'} readOnly /></label>
+              <label><span>Referrer</span><input value={referrerCustomer ? `${referrerCustomer.name} (${referrerCustomer.company || 'Customer'})` : customer.referrer ? `Customer #${customer.referrer}` : '—'} readOnly /></label>
             </div>
           </div>
           <div className="panel module-panel">
@@ -81,6 +94,7 @@ export default function CustomerShowPage() {
             <Link to="/customers" className="secondary-button" style={{ marginTop: 16 }}>Back to list</Link>
           </div>
         </section>
+        </>
       )}
     </AppShell>
   )

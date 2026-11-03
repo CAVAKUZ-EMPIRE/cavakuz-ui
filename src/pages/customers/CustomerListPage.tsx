@@ -7,7 +7,7 @@ import { Alert, EmptyState, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { Customer } from '../../types'
-
+import Swal from 'sweetalert2'
 export default function CustomerListPage() {
   const [searchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
@@ -42,7 +42,18 @@ export default function CustomerListPage() {
   )
 
   const handleDelete = async (customer: Customer) => {
-    if (!window.confirm(`Delete ${customer.name}?`)) return
+    const result = await Swal.fire({
+      title: 'Delete customer?',
+      text: `Are you sure you want to delete ${customer.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+    })
+
+    if (!result.isConfirmed) return
+
     try {
       await customersApi.remove(customer.id)
       setCustomers((current) => current.filter((item) => item.id !== customer.id))

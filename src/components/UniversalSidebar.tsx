@@ -15,6 +15,7 @@ import type { LucideIcon } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import logo from '/images/logo/logo.jpeg'
+import Swal from 'sweetalert2'
 export type SidebarItem = {
   label: string
   path: string
@@ -26,11 +27,13 @@ export const sidebarItems: SidebarItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Customers', path: '/customers', icon: Users },
   { label: 'Inventory', path: '/inventory', icon: Package },
+  // { label: 'Products', path: '/products', icon: Printer },
+  // { label: 'Services', path: '/services', icon: HandHelpingIcon },
   { label: 'Sales', path: '/sales', icon: FileText },
   { label: 'Expenses', path: '/expenses', icon: Wallet },
   { label: 'Tasks', path: '/tasks', icon: CheckSquare },
   { label: 'Financial Report', path: '/reports/financial', icon: BarChart3 },
-  { label: 'Notifications', path: '/notifications', icon: Bell },
+  { label: 'Broadcast', path: '/notifications', icon: Bell },
   { label: 'Create user', path: '/users/new', icon: UserPlus, adminOnly: true },
 ]
 
@@ -44,8 +47,20 @@ export default function UniversalSidebar({ sidebarOpen, onClose }: UniversalSide
   const { logout, isAdmin } = useAuth()
 
   const handleLogout = async () => {
-    await logout()
-    navigate('/login', { replace: true })
+    const result = Swal.fire({
+      title: "Logout",
+      text: "Are you sure you want to logout?",
+      icon: "question",
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No"
+    })
+    if((await result).isConfirmed){
+      await logout()
+      navigate('/login', { replace: true })
+
+    }
   }
 
   const items = sidebarItems.filter((item) => !item.adminOnly || isAdmin)
@@ -61,14 +76,14 @@ export default function UniversalSidebar({ sidebarOpen, onClose }: UniversalSide
           <div>
             {/* <div className="brand-name">CAVAKUZ EMPIRE</div> */}
             <img src={logo} alt="logo" className='sidebar-logo' />
-            <div className="brand-tagline">Sales • Service • Finance</div>
+            {/* <div className="brand-tagline">Sales • Service • Finance</div> */}
           </div>
           <button className="mobile-close" aria-label="Close menu" onClick={onClose}>
             <span aria-hidden="true">×</span>
           </button>
         </div>
 
-        <div className="sidebar-caption">WORKSPACE</div>
+        {/* <div className="sidebar-caption">WORKSPACE</div> */}
         <nav className="sidebar-nav">
           {items.map(({ label, path, icon: Icon }) => (
             <NavLink

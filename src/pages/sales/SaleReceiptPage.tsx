@@ -4,7 +4,7 @@ import { salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import { Alert, LoadingState } from '../../components/PageState'
 import StatusPill from '../../components/StatusPill'
-import { formatDate, money, prettyLabel } from '../../lib/format'
+import { formatDate, money, prettyLabel, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { SaleReceipt } from '../../types'
 import logo from '/images/logo/logo.jpeg'
@@ -50,7 +50,7 @@ export default function SaleReceiptPage() {
             </div>
             <div className="receipt-line">
               <span>Customer</span>
-              <strong>{receipt.customer?.name ?? '—'}</strong>
+              <strong>{receipt.customer?.name ?? receipt.customer_name ?? '—'}</strong>
             </div>
             <div className="receipt-line">
               <span>Date</span>
@@ -60,15 +60,30 @@ export default function SaleReceiptPage() {
               <span>Payment</span>
               <strong>{prettyLabel(receipt.payment_method)}</strong>
             </div>
-            {(receipt.items ?? []).map((item) => (
-              <div className="receipt-line" key={item.id}>
-                <span>{item.inventory?.name ?? `Item #${item.inventory_id}`} × {item.quantity}</span>
-                <strong>{money(item.total_price)}</strong>
-              </div>
-            ))}
+            {(receipt.items ?? []).map((item) => {
+              const customSetup = item.attributes && typeof item.attributes === 'object' && 'outfit_setup' in item.attributes
+                ? item.attributes.outfit_setup as Record<string, string> | undefined
+                : undefined
+
+              const outfitSummary = customSetup
+                ? Object.entries(customSetup)
+                  .map(([key, value]) => `${prettyLabel(key)}: ${value}`)
+                  .join(' • ')
+                : ''
+
+              const label = item.inventory?.name ?? item.product?.name ?? (outfitSummary || `Item #${item.product_id ?? item.inventory_id ?? item.id}`)
+              const lineTotal = item.total_price ?? item.subtotal ?? item.quantity * item.unit_price
+
+              return (
+                <div className="receipt-line" key={item.id}>
+                  <span>{label} × {item.quantity}</span>
+                  <strong>{money(lineTotal)}</strong>
+                </div>
+              )
+            })}
             <div className="receipt-line total">
               <span>Total</span>
-              <strong>{money(receipt.total_amount)}</strong>
+              <strong>{money(saleTotal(receipt))}</strong>
             </div>
             <div className="receipt-line status-line">
               <span>Status</span>

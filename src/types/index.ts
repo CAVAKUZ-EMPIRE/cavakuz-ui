@@ -14,9 +14,23 @@ export type Customer = {
   email: string | null
   location: string | null
   company: string | null
+  referrer?: number | null
+  referrer_customer?: Customer | null
   created_at?: string
   updated_at?: string
 }
+
+export type OutfitSetupOption = {
+  id: number
+  field_name: string
+  option_value: string
+  price_modifier: number
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
+export type OutfitSetupGroup = Record<string, OutfitSetupOption[]>
 
 export type InventoryItem = {
   id: number
@@ -28,26 +42,50 @@ export type InventoryItem = {
   created_at?: string
 }
 
+export type ProductCategory = 'designing' | 'printing' | 'paper_job' | 'finishing' | 'large_format' | 'souvenir'
+
+export type Product = {
+  id: number
+  name: string
+  category: ProductCategory | string | null
+  unit_price_plain: number
+  unit_price_branded: number | null
+  stock_quantity: number
+  unit_type: string
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
 export type SaleItem = {
   id: number
   sale_id: number
-  inventory_id: number
+  product_id?: number | null
+  inventory_id?: number | null
+  item_type?: string
   quantity: number
   unit_price: number
-  total_price: number
+  subtotal?: number
+  total_price?: number
+  attributes?: Record<string, unknown> | null
+  product?: Product
   inventory?: InventoryItem
 }
 
 export type PaymentMethod = 'cash' | 'card' | 'transfer' | 'mobile_money'
-export type PaymentStatus = 'full_payment' | 'half_payment' | 'not_paid'
+export type PaymentStatus = 'full_payment' | 'half_payment' | 'not_paid' | 'pending' | 'partial' | 'paid'
 
 export type Sale = {
   id: number
-  customer_id: number
+  invoice_number?: string
+  customer_id?: number | null
+  customer_name?: string | null
   total_amount: number
-  payment_method: PaymentMethod | string
-  payment_status: PaymentStatus | string
-  transaction_date: string
+  payment_method?: PaymentMethod | string
+  payment_status?: PaymentStatus | string
+  status?: string
+  transaction_date?: string
+  created_at?: string
   notes: string | null
   customer?: Customer
   items?: SaleItem[]
@@ -56,6 +94,7 @@ export type Sale = {
 export type SaleReceipt = {
   receipt_number: string
   customer: Customer | null
+  customer_name?: string | null
   transaction_date: string
   payment_method: string
   payment_status: string

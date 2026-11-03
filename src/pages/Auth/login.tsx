@@ -12,6 +12,7 @@ import '../../assets/styles/login.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 import { getErrorMessage } from '../../lib/http'
+import logo from '/images/logo/logo.jpeg'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -47,6 +48,7 @@ export default function Login() {
           <a href="/" className="cavakuz-logo">
             <span className="logo-symbol">
               {/* <Layers3 size={23} /> */}
+              <img src={logo} alt="logo" className="login-logo" />
             </span>
             <span>CAVAKUZ EMPIRE</span>
           </a>
@@ -125,6 +127,8 @@ export default function Login() {
           <div className="login-form-content">
             <div className="form-logo">
               {/* <Layers3 size={25} /> */}
+              <img src={logo} alt="logo" className="login-logo" />
+
             </div>
 
             <span className="form-overline">SECURE ACCESS</span>

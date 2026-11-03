@@ -1417,6 +1417,7 @@ button {
 .line-total {
   display: grid;
   gap: 8px;
+  margin: auto;
 }
 
 .line-total span {
@@ -1471,8 +1472,16 @@ button {
 }
 
 .sidebar-logo{
-  width: 45%;
+  width: 35%;
+  display: flex;
+  justify-self: center;
   
+}
+
+.login-logo{
+  width: 65%;
+  /* display: flex;
+  justify-self: center; */
 }
 
 @media (max-width: 780px) {
