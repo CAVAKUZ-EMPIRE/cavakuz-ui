@@ -1,9 +1,10 @@
 import { Bell, ChevronDown, Menu, Plus, Search, UserRound, X } from 'lucide-react'
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { notificationsApi } from '../api'
 import { useAuth } from '../auth/AuthContext'
 import '../assets/styles/dashboard.css'
+import { useMediaQuery } from '../lib/useMediaQuery'
 import UniversalSidebar from './UniversalSidebar'
 
 type AppShellProps = {
@@ -13,10 +14,22 @@ type AppShellProps = {
   action?: ReactNode
 }
 
+const SIDEBAR_PREF_KEY = 'cavakuz.sidebar'
+
+type SidebarPref = 'collapsed' | 'expanded'
+
 export default function AppShell({ pageTitle, pageSubtitle, children, action }: AppShellProps) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const isMobile = useMediaQuery('(max-width: 780px)')
+  const isTablet = useMediaQuery('(max-width: 1100px)')
+  const [sidebarPref, setSidebarPref] = useState<SidebarPref | null>(() => {
+    const saved = localStorage.getItem(SIDEBAR_PREF_KEY)
+    return saved === 'collapsed' || saved === 'expanded' ? saved : null
+  })
+  const collapsed = !isMobile && (sidebarPref ? sidebarPref === 'collapsed' : isTablet)
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const [search, setSearch] = useState('')
   const [unreadCount, setUnreadCount] = useState(0)
 
@@ -33,6 +46,12 @@ export default function AppShell({ pageTitle, pageSubtitle, children, action }: 
     void loadNotifications()
   }, [])
 
+  const toggleCollapsed = () => {
+    const next: SidebarPref = collapsed ? 'expanded' : 'collapsed'
+    setSidebarPref(next)
+    localStorage.setItem(SIDEBAR_PREF_KEY, next)
+  }
+
   const submitSearch = (event: FormEvent) => {
     event.preventDefault()
     const query = search.trim()
@@ -40,8 +59,14 @@ export default function AppShell({ pageTitle, pageSubtitle, children, action }: 
   }
 
   return (
-    <div className="cavakuz-app">
-      <UniversalSidebar sidebarOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className={`cavakuz-app ${collapsed ? 'is-collapsed' : ''}`}>
+      <UniversalSidebar
+        sidebarOpen={isMobile && sidebarOpen}
+        collapsed={collapsed}
+        isMobile={isMobile}
+        onClose={closeSidebar}
+        onToggleCollapsed={toggleCollapsed}
+      />
 
       <main className="cavakuz-main">
         <header className="topbar">
