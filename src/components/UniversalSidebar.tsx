@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   Package,
-  Printer,
+  // Printer,
   UserPlus,
   Users,
   Wallet,
@@ -16,6 +16,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import logo from '/images/logo/logo.jpeg'
 import Swal from 'sweetalert2'
+import { Link } from 'react-router-dom'
 export type SidebarItem = {
   label: string
   path: string
@@ -75,8 +76,10 @@ export default function UniversalSidebar({ sidebarOpen, onClose }: UniversalSide
         <div className="brand">
           <div>
             {/* <div className="brand-name">CAVAKUZ EMPIRE</div> */}
+            <Link to={"/"}>
             <img src={logo} alt="logo" className='sidebar-logo' />
             {/* <div className="brand-tagline">Sales • Service • Finance</div> */}
+            </Link>
           </div>
           <button className="mobile-close" aria-label="Close menu" onClick={onClose}>
             <span aria-hidden="true">×</span>
@@ -106,11 +109,11 @@ export default function UniversalSidebar({ sidebarOpen, onClose }: UniversalSide
             <span>Log out</span>
           </button>
 
-          <div className="sidebar-promo">
+          {/* <div className="sidebar-promo">
             <div className="promo-icon"><Printer size={20} /></div>
             <strong>Make great work.</strong>
             <p>Track customers, payments, inventory and performance in one place.</p>
-          </div>
+          </div> */}
         </div>
       </aside>
     </>

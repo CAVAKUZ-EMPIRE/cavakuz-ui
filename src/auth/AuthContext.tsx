@@ -29,7 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const nextUser = await authApi.me()
       setUser(nextUser)
-      storage.setUser(nextUser, Boolean(localStorage.getItem('cavakuz-token')))
+      const shouldPersist = Boolean(localStorage.getItem('cavakuz-token'))
+      storage.setUser(nextUser, shouldPersist)
     } catch {
       storage.clear()
       setUser(null)
@@ -47,6 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!result.token) {
       throw new Error('Login succeeded but no token was returned.')
     }
+
+    storage.clear()
     storage.setToken(result.token, remember)
     storage.setUser(result.user, remember)
     setUser(result.user)

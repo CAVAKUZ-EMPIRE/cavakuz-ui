@@ -7,7 +7,7 @@ import { Alert, LoadingState } from '../../components/PageState'
 import { money, prettyLabel } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
 import type { Customer, InventoryItem, OutfitSetupGroup } from '../../types'
-
+import Swal from 'sweetalert2'
 type InventoryLine = { type: 'inventory'; inventory_id: string; quantity: string }
 type OutfitLine = { type: 'outfit'; quantity: string; base_price: string; outfit_setup: Record<string, string> }
 type SaleLine = InventoryLine | OutfitLine
@@ -89,9 +89,13 @@ export default function SaleCreatePage() {
   const handleAddOutfitLine = () => {
     const requiredFields = Object.keys(outfitGroups)
     const hasMissingSelection = requiredFields.some((field) => !outfitSelection[field])
-
+  
     if (requiredFields.length > 0 && hasMissingSelection) {
-      setError('Please complete every outfit option before adding the custom outfit line.')
+      // setError('')
+      Swal.fire({
+        title: "Info",
+        icon: "info",
+        text:"Please complete every outfit option before adding the custom outfit line."})
       return
     }
 
@@ -118,7 +122,7 @@ export default function SaleCreatePage() {
           const item = inventory.find((entry) => String(entry.id) === line.inventory_id)
           const unitPrice = item?.unit_price ?? 0
           const quantity = Number(line.quantity || 0)
-          const subtotal = unitPrice * quantity
+          const subtotal = unitPrice * quantity 
 
           return {
             inventory_id: Number(line.inventory_id),
@@ -207,7 +211,7 @@ export default function SaleCreatePage() {
               </label>
             </div>
 
-            <div className="line-items">
+            <div className="line-items" >
               <div className="panel-heading">
                 <div>
                   <h2>Custom outfit setup</h2>
@@ -220,9 +224,10 @@ export default function SaleCreatePage() {
                   <span>{prettyLabel(fieldName)}</span>
                   <select
                     value={outfitSelection[fieldName] ?? ''}
+                    className='dropdown-outfit'
                     onChange={(event) => setOutfitSelection((current) => ({ ...current, [fieldName]: event.target.value }))}
                   >
-                    <option value="">Select an option</option>
+                    <option value="" className='dropdown-outfit'>Select an option</option>
                     {options.map((option) => (
                       <option key={`${fieldName}-${option.option_value}`} value={option.option_value}>
                         {option.option_value} {option.price_modifier ? `(+${money(option.price_modifier)})` : ''}
@@ -255,7 +260,7 @@ export default function SaleCreatePage() {
               </div>
 
               <div className="action-row" style={{ marginTop: 16 }}>
-                <button type="button" className="secondary-button" onClick={() => void handleAddOutfitLine()}>
+                <button type="button" className="add-custom-btn" onClick={() => void handleAddOutfitLine()}>
                   <Plus size={16} /> Add custom outfit
                 </button>
               </div>

@@ -1056,6 +1056,7 @@ button {
   font-weight: 700;
 }
 
+
 .primary-button {
   background: linear-gradient(135deg, #355ce0, #3151bd);
   color: white;
@@ -1133,7 +1134,41 @@ button {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  
 }
+
+.add-custom-btn{
+  background-color: #0b8d5a;
+  border: none;
+  border-radius: 50px;
+  min-height: 35px;
+  color: white;
+ 
+}
+
+select.dropdown-outfit {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Option styling */
+select.dropdown-outfit option {
+  padding: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Option selected styling */
+select.dropdown-outfit option[selected] {
+  background-color: #4CAF50;
+  color: white;
+}
+
 
 .table-actions {
   display: flex;
