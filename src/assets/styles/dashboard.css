@@ -1524,3 +1524,662 @@ select.dropdown-outfit option[selected] {
     grid-template-columns: 1fr;
   }
 }
+
+.line-label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.line-title {
+  color: #1e2c4a;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.line-meta {
+  color: #8b99b1;
+  font-size: 11px;
+}
+
+.setup-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.setup-chip {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #3c4f7c;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.setup-chip b {
+  color: #8592ad;
+  font-weight: 600;
+}
+
+.receipt-line.receipt-item,
+.inventory-item.sale-line {
+  align-items: flex-start;
+}
+
+.inventory-item .line-label {
+  flex: 1;
+}
+
+.line-actions {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.line-item-row select {
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+/* ===== Receipt document (printable on A4 / A5) ===== */
+.rdoc-stage {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 28px;
+  overflow-x: auto;
+}
+
+.rdoc-sheet {
+  --rdoc-pad: 16mm;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: 210mm;
+  min-height: 297mm;
+  padding: var(--rdoc-pad);
+  border: 1px solid #e1e7f5;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(25, 39, 72, 0.1);
+  color: #1e2c4a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.rdoc-sheet.rdoc-a5 {
+  --rdoc-pad: 10mm;
+  width: 148mm;
+  min-height: 210mm;
+  font-size: 10.5px;
+}
+
+.rdoc-sheet p,
+.rdoc-sheet dl,
+.rdoc-sheet dd {
+  margin: 0;
+}
+
+.rdoc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5em;
+  padding-bottom: 1.2em;
+  border-bottom: 2px solid #1e2c4a;
+}
+
+.rdoc-brand {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  min-width: 0;
+}
+
+.rdoc-logo {
+  flex: none;
+  width: 5em;
+  height: 5em;
+  object-fit: contain;
+}
+
+.rdoc-brand-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.6em;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.rdoc-brand p {
+  margin-top: 0.2em;
+  color: #5b6a86;
+  font-size: 0.92em;
+}
+
+.rdoc-doc-title {
+  text-align: right;
+}
+
+.rdoc-doc-title h2 {
+  margin: 0 0 0.6em;
+  font-family: 'Manrope', sans-serif;
+  font-size: 2em;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.rdoc-meta {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: end;
+  gap: 0.2em 1em;
+}
+
+.rdoc-meta dt {
+  color: #8592ad;
+  text-align: right;
+}
+
+.rdoc-meta dd {
+  font-weight: 700;
+  text-align: right;
+}
+
+.rdoc-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5em;
+  padding: 1.3em 0;
+}
+
+.rdoc-party-end {
+  justify-self: end;
+  text-align: right;
+}
+
+.rdoc-label {
+  margin-bottom: 0.45em !important;
+  color: #8592ad;
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rdoc-party-name {
+  font-size: 1.15em;
+}
+
+.rdoc-badge {
+  display: inline-block;
+  margin-bottom: 0.4em;
+  padding: 0.25em 0.9em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.9em;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.rdoc-badge-paid {
+  background: #e3f6ec;
+  color: #157347;
+}
+
+.rdoc-badge-part {
+  background: #fff1d6;
+  color: #9a5b00;
+}
+
+.rdoc-badge-unpaid {
+  background: #fde8e6;
+  color: #b3261e;
+}
+
+.rdoc-badge-neutral {
+  background: #eef1f8;
+  color: #4a5878;
+}
+
+.rdoc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rdoc-table th {
+  padding: 0.7em 0.8em;
+  border-top: 1px solid #1e2c4a;
+  border-bottom: 1px solid #1e2c4a;
+  background: #f1f4fb;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.rdoc-table td {
+  padding: 0.75em 0.8em;
+  border-bottom: 1px solid #dfe5f2;
+  vertical-align: top;
+}
+
+.rdoc-table thead {
+  display: table-header-group;
+}
+
+.rdoc-table tr {
+  break-inside: avoid;
+}
+
+.rdoc-table .rdoc-col-index {
+  width: 2.6em;
+  color: #8592ad;
+}
+
+.rdoc-table .rdoc-col-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.rdoc-item-name {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.rdoc-item-spec {
+  display: block;
+  margin-top: 0.2em;
+  color: #5b6a86;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
+.rdoc-item-spec span:not(:last-child)::after {
+  content: ' • ';
+}
+
+.rdoc-summary {
+  display: grid;
+  grid-template-columns: 1fr minmax(15em, 40%);
+  gap: 2em;
+  padding-top: 1.2em;
+  break-inside: avoid;
+}
+
+.rdoc-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.45em 0;
+}
+
+.rdoc-totals dt {
+  color: #5b6a86;
+}
+
+.rdoc-totals dd {
+  font-weight: 700;
+}
+
+.rdoc-totals .rdoc-grand-total {
+  margin-top: 0.4em;
+  padding: 0.7em 0;
+  border-top: 2px solid #1e2c4a;
+  border-bottom: 2px solid #1e2c4a;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.25em;
+  font-weight: 800;
+}
+
+.rdoc-totals .rdoc-grand-total dt {
+  color: #1e2c4a;
+}
+
+.rdoc-footer {
+  margin-top: auto;
+  padding-top: 3em;
+  break-inside: avoid;
+  text-align: center;
+}
+
+.rdoc-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4em;
+  margin-bottom: 2em;
+}
+
+.rdoc-signatures span {
+  padding-top: 0.5em;
+  border-top: 1px solid #1e2c4a;
+  color: #5b6a86;
+  font-size: 0.85em;
+}
+
+.rdoc-thanks {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+}
+
+.rdoc-fineprint {
+  margin-top: 0.3em !important;
+  color: #8592ad;
+  font-size: 0.82em;
+}
+
+.rdoc-paper-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #dbe3f5;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.rdoc-paper-toggle button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #5b6a86;
+  font-weight: 700;
+}
+
+.rdoc-paper-toggle button.active {
+  background: #3c60d0;
+  color: #fff;
+}
+
+@media print {
+  .cavakuz-main:has(.rdoc-sheet) .welcome-row {
+    display: none !important;
+  }
+
+  .rdoc-stage {
+    display: block;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .rdoc-sheet,
+  .rdoc-sheet.rdoc-a5 {
+    width: 100%;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* ===== Revenue bar chart ===== */
+.chart-section {
+  margin-bottom: 19px;
+}
+
+.rchart-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 36px;
+  margin-bottom: 26px;
+}
+
+.rchart-summary > div {
+  display: grid;
+  gap: 3px;
+}
+
+.rchart-summary span {
+  color: #8b99b1;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rchart-summary strong {
+  color: #1e2c4a;
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.rchart-summary .rchart-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 7px 12px;
+  border-radius: 999px;
+}
+
+.rchart-summary .rchart-trend strong {
+  font-size: 13px;
+}
+
+.rchart-summary .rchart-trend span {
+  color: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 11px;
+}
+
+.rchart-trend.up {
+  background: #e3f6ec;
+  color: #157347;
+}
+
+.rchart-trend.down {
+  background: #fde8e6;
+  color: #b3261e;
+}
+
+.rchart-trend.up strong,
+.rchart-trend.down strong {
+  color: inherit;
+}
+
+.rchart {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.rchart-axis {
+  position: relative;
+  height: var(--chart-height);
+}
+
+.rchart-axis span {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  color: #9aa4b7;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.rchart-plot {
+  position: relative;
+  height: var(--chart-height);
+}
+
+.rchart-gridline {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-top: 1px dashed #e3e9f5;
+}
+
+.rchart-gridline:first-of-type {
+  border-top: 1px solid #cfd8ea;
+}
+
+.rchart-bars {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.rchart-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  outline: none;
+}
+
+.rchart-bar {
+  width: min(58%, 68px);
+  min-height: 3px;
+  border-radius: 10px 10px 3px 3px;
+  background: linear-gradient(180deg, #8aa6ff 0%, #3c60d0 100%);
+  opacity: 0.55;
+  transform-origin: bottom;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+  animation: rchart-grow 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+.rchart-col.is-current .rchart-bar {
+  opacity: 1;
+  box-shadow: 0 8px 20px rgba(60, 96, 208, 0.3);
+}
+
+.rchart-col.is-empty .rchart-bar {
+  background: #d7dfef;
+  opacity: 1;
+}
+
+.rchart-col:hover .rchart-bar,
+.rchart-col:focus-visible .rchart-bar {
+  opacity: 1;
+  filter: saturate(1.15);
+}
+
+.rchart-col:focus-visible .rchart-bar {
+  outline: 2px solid #3c60d0;
+  outline-offset: 3px;
+}
+
+.rchart-value {
+  margin-bottom: 6px;
+  color: #3c4f7c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rchart-tip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  min-width: 118px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #1e2c4a;
+  box-shadow: 0 10px 24px rgba(25, 39, 72, 0.25);
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.rchart-tip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: #1e2c4a;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.rchart-tip small {
+  color: #aebbd8;
+  font-size: 10px;
+}
+
+.rchart-tip strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+}
+
+.rchart-col:hover .rchart-tip,
+.rchart-col:focus-visible .rchart-tip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rchart-xlabels {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.rchart-xlabels span {
+  display: grid;
+  justify-items: center;
+  color: #6b7a96;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rchart-xlabels span.is-current {
+  color: #3c60d0;
+  font-weight: 800;
+}
+
+.rchart-xlabels small {
+  color: #a5afc4;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+@keyframes rchart-grow {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rchart-bar {
+    animation: none;
+  }
+}
+
+@media (max-width: 780px) {
+  .rchart {
+    --chart-height: 190px !important;
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 8px;
+  }
+
+  .rchart-bars,
+  .rchart-xlabels {
+    gap: 6px;
+  }
+
+  .rchart-summary .rchart-trend {
+    margin-left: 0;
+  }
+}

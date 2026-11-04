@@ -4,6 +4,8 @@ import { inventoryApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import { Alert, LoadingState } from '../../components/PageState'
 import { money } from '../../lib/format'
+import { inventorySetup, inventoryTitle } from '../../lib/outfit'
+import OutfitSetupChips from '../../components/OutfitSetupChips'
 import { getErrorMessage } from '../../lib/http'
 import type { InventoryItem } from '../../types'
 
@@ -29,7 +31,7 @@ export default function InventoryShowPage() {
   }, [id])
 
   const handleDelete = async () => {
-    if (!item || !window.confirm(`Delete ${item.name}?`)) return
+    if (!item || !window.confirm(`Delete ${inventoryTitle(item)}?`)) return
     try {
       await inventoryApi.remove(item.id)
       navigate('/inventory')
@@ -56,7 +58,7 @@ export default function InventoryShowPage() {
         <section className="panel module-panel">
           <div className="summary-stack">
             <div className="summary-card highlight">
-              <span>{item.name}</span>
+              <span className="line-title">{inventoryTitle(item)}</span>
               <strong>{money(item.unit_price)}</strong>
             </div>
             <div className="summary-card">
@@ -68,7 +70,13 @@ export default function InventoryShowPage() {
               <strong>{item.category || '—'}</strong>
             </div>
           </div>
-          <p style={{ marginTop: 18 }}>{item.description || 'No description provided.'}</p>
+          {inventorySetup(item) ? (
+            <div className="line-label" style={{ marginTop: 18 }}>
+              <OutfitSetupChips setup={inventorySetup(item)!} />
+            </div>
+          ) : (
+            <p style={{ marginTop: 18 }}>{item.description || 'No description provided.'}</p>
+          )}
         </section>
       )}
     </AppShell>

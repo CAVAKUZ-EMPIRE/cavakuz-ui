@@ -92,12 +92,15 @@ export type Sale = {
 }
 
 export type SaleReceipt = {
-  receipt_number: string
+  receipt_number?: string
+  invoice_number?: string
   customer: Customer | null
   customer_name?: string | null
-  transaction_date: string
-  payment_method: string
+  transaction_date?: string
+  created_at?: string
+  payment_method?: string
   payment_status: string
+  notes?: string | null
   items: SaleItem[]
   total_amount: number
 }

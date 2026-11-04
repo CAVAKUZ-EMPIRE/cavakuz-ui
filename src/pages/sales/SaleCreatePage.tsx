@@ -3,9 +3,11 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { customersApi, inventoryApi, outfitSetupApi, salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
+import OutfitSetupChips from '../../components/OutfitSetupChips'
 import { Alert, LoadingState } from '../../components/PageState'
 import { money, prettyLabel } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { inventoryOptionLabel, outfitHeadline } from '../../lib/outfit'
 import type { Customer, InventoryItem, OutfitSetupGroup } from '../../types'
 import Swal from 'sweetalert2'
 type InventoryLine = { type: 'inventory'; inventory_id: string; quantity: string }
@@ -283,17 +285,14 @@ export default function SaleCreatePage() {
 
               {lines.map((line, index) => {
                 if (line.type === 'outfit') {
-                  const description = Object.entries(line.outfit_setup)
-                    .map(([field, value]) => `${prettyLabel(field)}: ${value}`)
-                    .join(' • ') || 'Custom outfit'
-
                   return (
                     <div className="line-item-row" key={`outfit-${index}`}>
                       <div className="field-grid" style={{ width: '100%' }}>
-                        <label style={{ gridColumn: '1 / -1' }}>
+                        <div className="line-label" style={{ gridColumn: '1 / -1' }}>
                           <span>Custom outfit</span>
-                          <input value={description} readOnly />
-                        </label>
+                          <strong className="line-title">{outfitHeadline(line.outfit_setup)}</strong>
+                          <OutfitSetupChips setup={line.outfit_setup} />
+                        </div>
                         <label>
                           <span>Qty</span>
                           <input
@@ -347,7 +346,7 @@ export default function SaleCreatePage() {
                       >
                         {inventory.map((entry) => (
                           <option key={entry.id} value={entry.id}>
-                            {entry.name} ({entry.stock_quantity} in stock)
+                            {inventoryOptionLabel(entry)} ({entry.stock_quantity} in stock)
                           </option>
                         ))}
                       </select>
