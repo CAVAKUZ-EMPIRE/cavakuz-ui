@@ -2,8 +2,8 @@ import axios, { type AxiosError } from 'axios'
 
 const TOKEN_KEY = 'cavakuz-token'
 const USER_KEY = 'cavakuz-user'
-// const API_BASE_URL = 'https://cavakuz-api-production-2culje.laravel.cloud/api'
-const API_BASE_URL_LOCAL = 'http://127.0.0.1:8000/api'
+const API_BASE_URL = 'https://cavakuz-api-production-2culje.laravel.cloud/api'
+// const API_BASE_URL_LOCAL = 'http://127.0.0.1:8000/api'
 export const storage = {
   getToken() {
     return sessionStorage.getItem(TOKEN_KEY) ?? localStorage.getItem(TOKEN_KEY)
@@ -45,7 +45,7 @@ export const storage = {
 }
 
 const api = axios.create({
-  baseURL: API_BASE_URL_LOCAL,
+  baseURL: API_BASE_URL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
