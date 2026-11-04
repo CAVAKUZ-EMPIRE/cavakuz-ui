@@ -92,12 +92,15 @@ export type Sale = {
 }
 
 export type SaleReceipt = {
-  receipt_number: string
+  receipt_number?: string
+  invoice_number?: string
   customer: Customer | null
   customer_name?: string | null
-  transaction_date: string
-  payment_method: string
+  transaction_date?: string
+  created_at?: string
+  payment_method?: string
   payment_status: string
+  notes?: string | null
   items: SaleItem[]
   total_amount: number
 }
@@ -141,6 +144,36 @@ export type FinancialMonth = {
   month: string
   total_amount: number | string
   sales_count: number
+}
+
+export type DailyReportDay = {
+  date: string
+  sales_count: number
+  items_sold: number
+  revenue: number
+  paid_amount: number
+  part_paid_amount: number
+  unpaid_amount: number
+  expenses: number
+  net: number
+}
+
+export type DailyReport = {
+  from: string
+  to: string
+  totals: {
+    revenue: number
+    expenses: number
+    net: number
+    sales_count: number
+    items_sold: number
+    paid_amount: number
+    part_paid_amount: number
+    unpaid_amount: number
+    average_daily_revenue: number
+    best_day: { date: string; revenue: number } | null
+  }
+  days: DailyReportDay[]
 }
 
 export type ApiEnvelope<T> = {

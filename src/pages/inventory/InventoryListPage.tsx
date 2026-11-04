@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { inventoryApi } from '../../api'
 import AppShell from '../../components/AppShell'
+import OutfitSetupChips from '../../components/OutfitSetupChips'
 import { Alert, EmptyState, LoadingState } from '../../components/PageState'
 import { money } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { inventorySetup, inventoryTitle } from '../../lib/outfit'
 import type { InventoryItem } from '../../types'
 
 export default function InventoryListPage() {
@@ -30,7 +32,7 @@ export default function InventoryListPage() {
   }, [])
 
   const handleDelete = async (item: InventoryItem) => {
-    if (!window.confirm(`Delete ${item.name}?`)) return
+    if (!window.confirm(`Delete ${inventoryTitle(item)}?`)) return
     try {
       await inventoryApi.remove(item.id)
       setItems((current) => current.filter((entry) => entry.id !== item.id))
@@ -52,12 +54,13 @@ export default function InventoryListPage() {
         <section className="panel module-panel">
           <div className="inventory-list">
             {items.map((item) => (
-              <div className="inventory-item" key={item.id}>
-                <div>
-                  <strong>{item.name}</strong>
-                  <small>{item.category || 'Uncategorised'} · {item.stock_quantity} in stock</small>
+              <div className="inventory-item sale-line" key={item.id}>
+                <div className="line-label">
+                  <strong className="line-title">{inventoryTitle(item)}</strong>
+                  {inventorySetup(item) && <OutfitSetupChips setup={inventorySetup(item)!} />}
+                  <small className="line-meta">{item.category || 'Uncategorised'} · {item.stock_quantity} in stock</small>
                 </div>
-                <div>
+                <div className="line-actions">
                   <strong>{money(item.unit_price)}</strong>
                   <div className="table-actions" style={{ marginTop: 8 }}>
                     <Link className="table-button" to={`/inventory/${item.id}`}>View</Link>

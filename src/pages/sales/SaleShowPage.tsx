@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import { Alert, LoadingState } from '../../components/PageState'
+import SaleItemLabel from '../../components/SaleItemLabel'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, prettyLabel, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
@@ -58,24 +59,13 @@ export default function SaleShowPage() {
           <div className="panel module-panel">
             <div className="inventory-list">
               {(sale.items ?? []).map((item) => {
-                const customSetup = item.attributes && typeof item.attributes === 'object' && 'outfit_setup' in item.attributes
-                  ? item.attributes.outfit_setup as Record<string, string> | undefined
-                  : undefined
-
-                const outfitSummary = customSetup
-                  ? Object.entries(customSetup)
-                    .map(([key, value]) => `${prettyLabel(key)}: ${value}`)
-                    .join(' • ')
-                  : ''
-
-                const label = item.inventory?.name ?? item.product?.name ?? (outfitSummary || `Item #${item.product_id ?? item.inventory_id ?? item.id}`)
                 const lineTotal = item.total_price ?? item.subtotal ?? item.quantity * item.unit_price
 
                 return (
-                  <div className="inventory-item" key={item.id}>
-                    <div>
-                      <strong>{label}</strong>
-                      <small>{item.quantity} × {money(item.unit_price)}</small>
+                  <div className="inventory-item sale-line" key={item.id}>
+                    <div className="line-label">
+                      <SaleItemLabel item={item} />
+                      <small className="line-meta">{item.quantity} × {money(item.unit_price)}</small>
                     </div>
                     <strong>{money(lineTotal)}</strong>
                   </div>

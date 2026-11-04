@@ -2,10 +2,11 @@ import axios, { type AxiosError } from 'axios'
 
 const TOKEN_KEY = 'cavakuz-token'
 const USER_KEY = 'cavakuz-user'
-const API_BASE_URL = 'https://cavakuz-api-production-2culje.laravel.cloud/api'
+// const API_BASE_URL = 'https://cavakuz-api-production-2culje.laravel.cloud/api'
+const API_BASE_URL_LOCAL = 'http://127.0.0.1:8000/api'
 export const storage = {
   getToken() {
-    return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY)
+    return sessionStorage.getItem(TOKEN_KEY) ?? localStorage.getItem(TOKEN_KEY)
   },
   setToken(token: string, persist: boolean) {
     sessionStorage.setItem(TOKEN_KEY, token)
@@ -16,7 +17,7 @@ export const storage = {
     }
   },
   getUser() {
-    const raw = localStorage.getItem(USER_KEY) ?? sessionStorage.getItem(USER_KEY)
+    const raw = sessionStorage.getItem(USER_KEY) ?? localStorage.getItem(USER_KEY)
     if (!raw) return null
     try {
       return JSON.parse(raw)
@@ -44,7 +45,7 @@ export const storage = {
 }
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL_LOCAL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -67,8 +68,9 @@ api.interceptors.response.use(
     const url = error.config?.url ?? ''
     if (status === 401 && !url.includes('/login')) {
       storage.clear()
-      if (!window.location.pathname.startsWith('/login')) {
-        window.location.assign('/login')
+      const loginUrl = `${window.location.origin}/#/login`
+      if (window.location.href !== loginUrl) {
+        window.location.assign(loginUrl)
       }
     }
     return Promise.reject(error)

@@ -2,6 +2,7 @@ import api from '../lib/apiClient'
 import { unwrapData, unwrapList } from '../lib/http'
 import type {
   Customer,
+  DailyReport,
   DashboardSummary,
   Expense,
   FinancialMonth,
@@ -55,6 +56,10 @@ export const dashboardApi = {
   financialReport: async () => {
     const { data } = await api.get('/reports/financial')
     return unwrapList<FinancialMonth>(data)
+  },
+  dailyReport: async (params: { from?: string; to?: string } = {}) => {
+    const { data } = await api.get('/reports/daily', { params })
+    return unwrapData<DailyReport>(data)
   },
 }
 

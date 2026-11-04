@@ -1,20 +1,24 @@
 import { ArrowUpRight, Boxes, CheckSquare, Users, Wallet } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { dashboardApi, expensesApi, tasksApi } from '../../api'
 import { useAuth } from '../../auth/AuthContext'
 import AppShell from '../../components/AppShell'
 import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import RevenueBarChart from '../../components/RevenueBarChart'
+import PanelHeading from '../../components/PanelHeading'
+import StatCard from '../../components/StatCard'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
-import type { DashboardSummary, Expense, Task } from '../../types'
+import type { DashboardSummary, Expense, FinancialMonth, Task } from '../../types'
 
 export default function DashboardPage() {
   const { user, isAdmin } = useAuth()
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const [tasks, setTasks] = useState<Task[]>([])
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const [months, setMonths] = useState<FinancialMonth[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -23,14 +27,16 @@ export default function DashboardPage() {
       setLoading(true)
       setError('')
       try {
-        const [dashboard, nextTasks, nextExpenses] = await Promise.all([
+        const [dashboard, nextTasks, nextExpenses, nextMonths] = await Promise.all([
           isAdmin ? dashboardApi.admin() : dashboardApi.summary(),
           tasksApi.list(),
           expensesApi.list(),
+          dashboardApi.financialReport().catch(() => [] as FinancialMonth[]),
         ])
         setSummary(dashboard)
         setTasks(nextTasks)
         setExpenses(nextExpenses)
+        setMonths(nextMonths)
       } catch (err) {
         setError(getErrorMessage(err))
       } finally {
@@ -63,6 +69,13 @@ export default function DashboardPage() {
             <StatCard title="Total sales" value={String(summary.total_sales)} icon={<CheckSquare />} tone="green" note="recorded transactions" />
             <StatCard title="Open tasks" value={String(openTasks)} icon={<Boxes />} tone="orange" note="still in progress" />
             <StatCard title="Total revenue" value={money(summary.total_revenue)} icon={<Wallet />} tone="purple" note="all recorded sales" />
+          </section>
+
+          <section className="chart-section">
+            <div className="panel revenue-panel">
+              <PanelHeading title="Revenue overview" subtitle="Sales revenue per month" action="Full report" to="/reports/financial" />
+              <RevenueBarChart months={months} />
+            </div>
           </section>
 
           <section className="overview-grid">
@@ -143,56 +156,5 @@ export default function DashboardPage() {
         </>
       )}
     </AppShell>
-  )
-}
-
-function StatCard({
-  title,
-  value,
-  icon,
-  tone,
-  note,
-}: {
-  title: string
-  value: string
-  icon: ReactNode
-  tone: string
-  note: string
-}) {
-  return (
-    <div className="stat-card">
-      <div className={`stat-icon ${tone}`}>{icon}</div>
-      <div className="stat-content">
-        <span>{title}</span>
-        <strong>{value}</strong>
-        <div className="stat-change"><small>{note}</small></div>
-      </div>
-    </div>
-  )
-}
-
-function PanelHeading({
-  title,
-  subtitle,
-  action,
-  to,
-}: {
-  title: string
-  subtitle: string
-  action?: string
-  to?: string
-}) {
-  return (
-    <div className="panel-heading">
-      <div>
-        <h2>{title}</h2>
-        <p>{subtitle}</p>
-      </div>
-      {action && to && (
-        <Link className="panel-action" to={to}>
-          {action} <ArrowUpRight size={14} />
-        </Link>
-      )}
-    </div>
   )
 }
