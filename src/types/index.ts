@@ -146,6 +146,36 @@ export type FinancialMonth = {
   sales_count: number
 }
 
+export type DailyReportDay = {
+  date: string
+  sales_count: number
+  items_sold: number
+  revenue: number
+  paid_amount: number
+  part_paid_amount: number
+  unpaid_amount: number
+  expenses: number
+  net: number
+}
+
+export type DailyReport = {
+  from: string
+  to: string
+  totals: {
+    revenue: number
+    expenses: number
+    net: number
+    sales_count: number
+    items_sold: number
+    paid_amount: number
+    part_paid_amount: number
+    unpaid_amount: number
+    average_daily_revenue: number
+    best_day: { date: string; revenue: number } | null
+  }
+  days: DailyReportDay[]
+}
+
 export type ApiEnvelope<T> = {
   message?: string
   data?: T

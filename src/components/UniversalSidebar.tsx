@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Bell,
+  CalendarDays,
   CheckSquare,
   FileText,
   LayoutDashboard,
@@ -33,6 +34,7 @@ export const sidebarItems: SidebarItem[] = [
   { label: 'Sales', path: '/sales', icon: FileText },
   { label: 'Expenses', path: '/expenses', icon: Wallet },
   { label: 'Tasks', path: '/tasks', icon: CheckSquare },
+  { label: 'Daily Report', path: '/reports/daily', icon: CalendarDays },
   { label: 'Financial Report', path: '/reports/financial', icon: BarChart3 },
   { label: 'Broadcast', path: '/notifications', icon: Bell },
   { label: 'Create user', path: '/users/new', icon: UserPlus, adminOnly: true },

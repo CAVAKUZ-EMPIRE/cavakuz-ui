@@ -14,6 +14,7 @@ import NotificationsPage from './pages/notifications/NotificationsPage.tsx'
 import ProductFormPage from './pages/products/ProductFormPage.tsx'
 import ProductListPage from './pages/products/ProductListPage.tsx'
 import ProductShowPage from './pages/products/ProductShowPage.tsx'
+import DailyReportPage from './pages/reports/DailyReportPage.tsx'
 import FinancialReportPage from './pages/reports/FinancialReportPage.tsx'
 import SaleCreatePage from './pages/sales/SaleCreatePage.tsx'
 import SaleReceiptPage from './pages/sales/SaleReceiptPage.tsx'
@@ -61,6 +62,7 @@ function App() {
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/reports/financial" element={<FinancialReportPage />} />
+        <Route path="/reports/daily" element={<DailyReportPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
 
         <Route element={<AdminRoute />}>

@@ -1,11 +1,13 @@
 import { ArrowUpRight, Boxes, CheckSquare, Users, Wallet } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { dashboardApi, expensesApi, tasksApi } from '../../api'
 import { useAuth } from '../../auth/AuthContext'
 import AppShell from '../../components/AppShell'
 import { Alert, EmptyState, LoadingState } from '../../components/PageState'
 import RevenueBarChart from '../../components/RevenueBarChart'
+import PanelHeading from '../../components/PanelHeading'
+import StatCard from '../../components/StatCard'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
@@ -154,56 +156,5 @@ export default function DashboardPage() {
         </>
       )}
     </AppShell>
-  )
-}
-
-function StatCard({
-  title,
-  value,
-  icon,
-  tone,
-  note,
-}: {
-  title: string
-  value: string
-  icon: ReactNode
-  tone: string
-  note: string
-}) {
-  return (
-    <div className="stat-card">
-      <div className={`stat-icon ${tone}`}>{icon}</div>
-      <div className="stat-content">
-        <span>{title}</span>
-        <strong>{value}</strong>
-        <div className="stat-change"><small>{note}</small></div>
-      </div>
-    </div>
-  )
-}
-
-function PanelHeading({
-  title,
-  subtitle,
-  action,
-  to,
-}: {
-  title: string
-  subtitle: string
-  action?: string
-  to?: string
-}) {
-  return (
-    <div className="panel-heading">
-      <div>
-        <h2>{title}</h2>
-        <p>{subtitle}</p>
-      </div>
-      {action && to && (
-        <Link className="panel-action" to={to}>
-          {action} <ArrowUpRight size={14} />
-        </Link>
-      )}
-    </div>
   )
 }

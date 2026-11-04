@@ -1,12 +1,10 @@
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import type { CSSProperties } from 'react'
+import { buildTicks, compactMoney } from '../lib/chart'
 import { money } from '../lib/format'
 import type { FinancialMonth } from '../types'
 
 const MONTHS_SHOWN = 6
-const TICK_COUNT = 4
-
-const compact = new Intl.NumberFormat('en-GH', { notation: 'compact', maximumFractionDigits: 1 })
 
 type Column = {
   key: string
@@ -39,11 +37,6 @@ const buildColumns = (months: FinancialMonth[]): Column[] => {
   })
 }
 
-const niceStep = (raw: number) => {
-  const magnitude = 10 ** Math.floor(Math.log10(raw))
-  return [1, 2, 2.5, 5, 10].map((multiplier) => multiplier * magnitude).find((step) => step >= raw) ?? magnitude * 10
-}
-
 export default function RevenueBarChart({ months }: { months: FinancialMonth[] }) {
   const columns = buildColumns(months)
   const peak = Math.max(...columns.map((column) => column.revenue))
@@ -52,12 +45,7 @@ export default function RevenueBarChart({ months }: { months: FinancialMonth[] }
     return <p className="empty-state">No sales recorded in the last {MONTHS_SHOWN} months yet.</p>
   }
 
-  const step = niceStep((peak * 1.08) / TICK_COUNT)
-  const ceiling = step * TICK_COUNT
-  const ticks = Array.from({ length: TICK_COUNT + 1 }, (_, index) => ({
-    value: step * index,
-    percent: (index / TICK_COUNT) * 100,
-  }))
+  const { ceiling, ticks } = buildTicks(peak)
 
   const total = columns.reduce((sum, column) => sum + column.revenue, 0)
   const best = columns.reduce((winner, column) => (column.revenue > winner.revenue ? column : winner))
@@ -92,7 +80,7 @@ export default function RevenueBarChart({ months }: { months: FinancialMonth[] }
       <div className="rchart" style={{ '--chart-height': '240px' } as CSSProperties} role="group" aria-label={`Monthly revenue for the last ${MONTHS_SHOWN} months`}>
         <div className="rchart-axis" aria-hidden="true">
           {ticks.map((tick) => (
-            <span key={tick.percent} style={{ bottom: `${tick.percent}%` }}>{compact.format(tick.value)}</span>
+            <span key={tick.percent} style={{ bottom: `${tick.percent}%` }}>{compactMoney.format(tick.value)}</span>
           ))}
         </div>
 
@@ -118,7 +106,7 @@ export default function RevenueBarChart({ months }: { months: FinancialMonth[] }
                     <strong>{money(column.revenue)}</strong>
                     <small>{column.sales} {column.sales === 1 ? 'sale' : 'sales'}</small>
                   </div>
-                  {column.revenue > 0 && <span className="rchart-value">{compact.format(column.revenue)}</span>}
+                  {column.revenue > 0 && <span className="rchart-value">{compactMoney.format(column.revenue)}</span>}
                   <div className="rchart-bar" style={{ height: `${percent}%` }} />
                 </div>
               )
