@@ -105,6 +105,8 @@ export default function DailyReportPage() {
             )
           })}
         </div>
+        <button className='btn btn-success'>Export TO PDF</button>
+
         <div className="dr-dates">
           <label>
             <span>From</span>
