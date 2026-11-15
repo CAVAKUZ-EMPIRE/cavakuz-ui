@@ -1,5 +1,5 @@
-import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
-import { useEffect } from 'react'
+import { ChevronDown, ChevronUp, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { useAuth } from '../auth/AuthContext'
@@ -18,6 +18,7 @@ type UniversalSidebarProps = {
 export default function UniversalSidebar({ sidebarOpen, collapsed, isMobile, onClose, onToggleCollapsed }: UniversalSidebarProps) {
   const navigate = useNavigate()
   const { user, logout, isAdmin } = useAuth()
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     if (!sidebarOpen) return
@@ -52,6 +53,10 @@ export default function UniversalSidebar({ sidebarOpen, collapsed, isMobile, onC
     }
   }
 
+  const toggleGroup = (label: string) => {
+    setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }))
+  }
+
   const groups = navigation
     .map((group) => ({ ...group, items: group.items.filter((item) => !item.adminOnly || isAdmin) }))
     .filter((group) => group.items.length > 0)
@@ -75,27 +80,63 @@ export default function UniversalSidebar({ sidebarOpen, collapsed, isMobile, onC
         </div>
 
         <nav className="sidebar-scroll">
-          {groups.map((group) => (
-            <div className="sidebar-group" key={group.label}>
-              <div className="sidebar-caption">{group.label}</div>
-              <div className="sidebar-nav">
-                {group.items.map(({ label, path, icon: Icon }) => (
+          {groups.map((group) => {
+            const GroupIcon = group.icon
+            const isOpen = openGroups[group.label]
+            const hasMultiple = group.items.length > 1
+
+            // For single-item groups, render a direct NavLink instead of a dropdown
+            if (!hasMultiple && group.items.length === 1) {
+              const [item] = group.items
+              return (
+                <div className="sidebar-group" key={group.label}>
                   <NavLink
-                    key={path}
-                    to={path}
-                    end={path === '/dashboard'}
+                    to={item.path}
+                    end={item.path === '/dashboard'}
                     className={({ isActive }) => `nav-link-custom ${isActive ? 'active' : ''}`}
-                    title={collapsed ? label : undefined}
-                    aria-label={label}
+                    title={collapsed ? item.label : undefined}
+                    aria-label={item.label}
                     onClick={onClose}
                   >
-                    <Icon size={19} />
-                    <span>{label}</span>
+                    <GroupIcon size={19} />
+                    {!collapsed && <span>{item.label}</span>}
                   </NavLink>
-                ))}
+                </div>
+              )
+            }
+
+            return (
+              <div className="sidebar-group" key={group.label}>
+                <button
+                  className="sidebar-dropdown-toggle"
+                  onClick={() => toggleGroup(group.label)}
+                  aria-expanded={isOpen}
+                  title={collapsed ? group.label : undefined}
+                >
+                  <GroupIcon size={19} />
+                  {!collapsed && <span>{group.label}</span>}
+                  {!collapsed && (isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
+                </button>
+                {!collapsed && isOpen && (
+                  <div className="sidebar-nav sidebar-dropdown-open">
+                    {group.items.map(({ label, path, icon: Icon }) => (
+                      <NavLink
+                        key={path}
+                        to={path}
+                        end={path === '/dashboard'}
+                        className={({ isActive }) => `nav-link-custom ${isActive ? 'active' : ''}`}
+                        aria-label={label}
+                        onClick={onClose}
+                      >
+                        <Icon size={16} />
+                        <span>{label}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </nav>
 
         <div className="sidebar-bottom">

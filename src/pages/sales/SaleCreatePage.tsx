@@ -37,7 +37,7 @@ export default function SaleCreatePage() {
   const [outfitGroups, setOutfitGroups] = useState<OutfitSetupGroup>({})
   const [customerId, setCustomerId] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('mobile_money')
-  const [paymentStatus, setPaymentStatus] = useState('full_payment')
+  const [amountPaid, setAmountPaid] = useState('')
   const [notes, setNotes] = useState('')
   const [lines, setLines] = useState<SaleLine[]>([{ type: 'inventory', inventory_id: '', quantity: '1' }])
   const [outfitSelection, setOutfitSelection] = useState<Record<string, string>>({})
@@ -87,6 +87,14 @@ export default function SaleCreatePage() {
       }, 0),
     [inventory, lines, outfitGroups],
   )
+
+  const derivedPaymentStatus = useMemo(() => {
+    const paid = Number(amountPaid || 0)
+    if (estimatedTotal === 0) return 'not_paid'
+    if (paid <= 0) return 'not_paid'
+    if (paid >= estimatedTotal) return 'full_payment'
+    return 'partial'
+  }, [amountPaid, estimatedTotal])
 
   const handleAddOutfitLine = () => {
     const requiredFields = Object.keys(outfitGroups)
@@ -154,11 +162,13 @@ export default function SaleCreatePage() {
       })
 
       const totalAmount = items.reduce((sum, item) => sum + Number(item.total_price ?? item.subtotal ?? 0), 0)
+      const paid = Number(amountPaid || 0)
 
       const sale = await salesApi.create({
         customer_id: Number(customerId),
         payment_method: paymentMethod,
-        payment_status: paymentStatus,
+        payment_status: derivedPaymentStatus,
+        amount_paid: paid,
         notes: notes || null,
         total_amount: totalAmount,
         items,
@@ -200,13 +210,22 @@ export default function SaleCreatePage() {
                 </select>
               </label>
               <label>
-                <span>Payment status</span>
-                <select value={paymentStatus} onChange={(event) => setPaymentStatus(event.target.value)}>
-                  <option value="full_payment">Full payment</option>
-                  <option value="half_payment">Half payment</option>
-                  <option value="not_paid">Not paid</option>
-                </select>
+                <span>Amount paid by customer</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={amountPaid}
+                  onChange={(event) => setAmountPaid(event.target.value)}
+                  placeholder="0.00"
+                />
               </label>
+              <div className="payment-status-indicator">
+                <span>Payment status</span>
+                <span className={`status-pill ${derivedPaymentStatus}`}>
+                  {derivedPaymentStatus === 'full_payment' ? 'Full payment' : derivedPaymentStatus === 'partial' ? 'Part paid' : 'Not paid'}
+                </span>
+              </div>
               <label>
                 <span>Notes</span>
                 <input value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Optional" />

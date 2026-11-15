@@ -159,6 +159,7 @@ export const salesApi = {
     customer_name?: string | null
     payment_method?: string
     payment_status?: string
+    amount_paid?: number
     status?: string
     notes?: string | null
     total_amount?: number
