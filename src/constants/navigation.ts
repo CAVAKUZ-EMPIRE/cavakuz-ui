@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   Bell,
   CalendarDays,
@@ -42,6 +43,7 @@ export const navigation: NavGroup[] = [
     label: 'Operations',
     items: [
       { label: 'Customers', path: '/customers', icon: Users },
+      { label: 'Loyal Customers', path: '/loyal-customers', icon: Award },
       { label: 'Inventory', path: '/inventory', icon: Package },
       // { label: 'Products', path: '/products', icon: Printer },
       // { label: 'Services', path: '/services', icon: HandHelpingIcon },

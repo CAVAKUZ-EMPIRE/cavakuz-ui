@@ -176,6 +176,18 @@ export type DailyReport = {
   days: DailyReportDay[]
 }
 
+export type LoyalCustomer = {
+  id: number
+  name: string
+  email: string | null
+  phone_number: string
+  company: string | null
+  location: string | null
+  referral_count: number
+  purchase_count: number
+  loyalty_score: number
+}
+
 export type ApiEnvelope<T> = {
   message?: string
   data?: T

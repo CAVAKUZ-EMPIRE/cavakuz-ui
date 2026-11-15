@@ -22,6 +22,7 @@ import SaleShowPage from './pages/sales/SaleShowPage.tsx'
 import SalesListPage from './pages/sales/SalesListPage.tsx'
 import TasksPage from './pages/tasks/TasksPage.tsx'
 import CreateUserPage from './pages/users/CreateUserPage.tsx'
+import LoyalCustomersPage from './pages/loyal-customers/LoyalCustomersPage.tsx'
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/customers/new" element={<CustomerFormPage />} />
         <Route path="/customers/:id" element={<CustomerShowPage />} />
         <Route path="/customers/:id/edit" element={<CustomerFormPage />} />
+        <Route path="/loyal-customers" element={<LoyalCustomersPage />} />
 
         <Route path="/inventory" element={<InventoryListPage />} />
         <Route path="/inventory/new" element={<InventoryFormPage />} />
