@@ -73,7 +73,7 @@ export type SaleItem = {
 }
 
 export type PaymentMethod = 'cash' | 'card' | 'transfer' | 'mobile_money'
-export type PaymentStatus = 'full_payment' | 'half_payment' | 'not_paid' | 'pending' | 'partial' | 'paid'
+export type PaymentStatus = 'full_payment' | 'half_payment' | 'not_paid' | 'pending' | 'partial' | 'paid' | 'part_paid'
 
 export type Sale = {
   id: number
@@ -81,6 +81,7 @@ export type Sale = {
   customer_id?: number | null
   customer_name?: string | null
   total_amount: number
+  amount_paid?: number
   payment_method?: PaymentMethod | string
   payment_status?: PaymentStatus | string
   status?: string
@@ -174,6 +175,18 @@ export type DailyReport = {
     best_day: { date: string; revenue: number } | null
   }
   days: DailyReportDay[]
+}
+
+export type LoyalCustomer = {
+  id: number
+  name: string
+  email: string | null
+  phone_number: string
+  company: string | null
+  location: string | null
+  referral_count: number
+  purchase_count: number
+  loyalty_score: number
 }
 
 export type ApiEnvelope<T> = {

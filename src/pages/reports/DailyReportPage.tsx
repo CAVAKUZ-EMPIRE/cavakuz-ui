@@ -1,5 +1,8 @@
-import { CalendarDays, Receipt, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { CalendarDays, Download, Receipt, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import * as XLSX from 'xlsx'
 import { dashboardApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import DailyBarChart from '../../components/DailyBarChart'
@@ -85,6 +88,69 @@ export default function DailyReportPage() {
     applyRange(next)
   }
 
+  const handleExportPdf = () => {
+    if (!report || !totals) return
+
+    const doc = new jsPDF({ orientation: 'landscape' })
+
+    doc.setFontSize(18)
+    doc.text('Daily Report', 14, 15)
+    doc.setFontSize(10)
+    doc.text(`Period: ${range.from} to ${range.to}`, 14, 22)
+
+    autoTable(doc, {
+      startY: 28,
+      head: [['Day', 'Sales', 'Revenue', 'Paid', 'Part Paid', 'Unpaid', 'Expenses', 'Net']],
+      body: [...report.days].reverse().map((day) => [
+        dayLabel(day.date),
+        day.sales_count,
+        money(day.revenue),
+        money(day.paid_amount),
+        money(day.part_paid_amount),
+        money(day.unpaid_amount),
+        money(day.expenses),
+        money(day.net),
+      ]),
+      foot: [['Totals', totals.sales_count, money(totals.revenue), money(totals.paid_amount), money(totals.part_paid_amount), money(totals.unpaid_amount), money(totals.expenses), money(totals.net)]],
+      theme: 'striped',
+      headStyles: { fillColor: [53, 92, 224] },
+      footStyles: { fillColor: [240, 244, 255], textColor: [25, 39, 72], fontStyle: 'bold' },
+    })
+
+    doc.save(`daily-report-${range.from}-to-${range.to}.pdf`)
+  }
+
+  const handleExportExcel = () => {
+    if (!report || !totals) return
+
+    const rows = [...report.days].reverse().map((day) => ({
+      Day: dayLabel(day.date),
+      Sales: day.sales_count,
+      Revenue: day.revenue,
+      'Paid Amount': day.paid_amount,
+      'Part Paid Amount': day.part_paid_amount,
+      'Unpaid Amount': day.unpaid_amount,
+      Expenses: day.expenses,
+      Net: day.net,
+    }))
+
+    rows.push({
+      Day: 'Totals',
+      Sales: totals.sales_count,
+      Revenue: totals.revenue,
+      'Paid Amount': totals.paid_amount,
+      'Part Paid Amount': totals.part_paid_amount,
+      'Unpaid Amount': totals.unpaid_amount,
+      Expenses: totals.expenses,
+      Net: totals.net,
+    })
+
+    const worksheet = XLSX.utils.json_to_sheet(rows)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Daily Report')
+    XLSX.writeFile(workbook, `daily-report-${range.from}-to-${range.to}.xlsx`)
+  }
+
   const peakRevenue = useMemo(() => Math.max(0, ...(report?.days ?? []).map((day) => day.revenue)), [report])
   const today = toIsoDate(new Date())
   const totals = report?.totals
@@ -105,6 +171,15 @@ export default function DailyReportPage() {
             )
           })}
         </div>
+        <div className="dr-export-buttons" role="group" aria-label="Export options">
+          <button type="button" className="export-btn export-pdf" onClick={() => void handleExportPdf()}>
+            <Download size={14} /> Export PDF
+          </button>
+          <button type="button" className="export-btn export-excel" onClick={() => void handleExportExcel()}>
+            <Download size={14} /> Export Excel
+          </button>
+        </div>
+
         <div className="dr-dates">
           <label>
             <span>From</span>

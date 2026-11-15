@@ -7,6 +7,7 @@ import type {
   Expense,
   FinancialMonth,
   InventoryItem,
+  LoyalCustomer,
   NotificationItem,
   OutfitSetupOption,
   Product,
@@ -158,6 +159,7 @@ export const salesApi = {
     customer_name?: string | null
     payment_method?: string
     payment_status?: string
+    amount_paid?: number
     status?: string
     notes?: string | null
     total_amount?: number
@@ -250,5 +252,12 @@ export const notificationsApi = {
   markRead: async (id: string | number) => {
     const { data } = await api.post(`/notifications/${id}/read`)
     return unwrapData<NotificationItem>(data)
+  },
+}
+
+export const loyalCustomersApi = {
+  list: async () => {
+    const { data } = await api.get('/loyal-customers')
+    return unwrapList<LoyalCustomer>(data)
   },
 }

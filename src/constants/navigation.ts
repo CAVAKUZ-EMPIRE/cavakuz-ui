@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   Bell,
   CalendarDays,
@@ -21,16 +22,19 @@ export type NavItem = {
 
 export type NavGroup = {
   label: string
+  icon: LucideIcon
   items: NavItem[]
 }
 
 export const navigation: NavGroup[] = [
   {
-    label: 'Overview',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
     items: [{ label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard }],
   },
   {
     label: 'Sales & Finance',
+    icon: FileText,
     items: [
       { label: 'Sales', path: '/sales', icon: FileText },
       { label: 'Expenses', path: '/expenses', icon: Wallet },
@@ -40,8 +44,10 @@ export const navigation: NavGroup[] = [
   },
   {
     label: 'Operations',
+    icon: Package,
     items: [
       { label: 'Customers', path: '/customers', icon: Users },
+      { label: 'Loyal Customers', path: '/loyal-customers', icon: Award },
       { label: 'Inventory', path: '/inventory', icon: Package },
       // { label: 'Products', path: '/products', icon: Printer },
       // { label: 'Services', path: '/services', icon: HandHelpingIcon },
@@ -51,6 +57,7 @@ export const navigation: NavGroup[] = [
   },
   {
     label: 'Administration',
+    icon: UserPlus,
     items: [{ label: 'Create user', path: '/users/new', icon: UserPlus, adminOnly: true }],
   },
 ]

@@ -169,6 +169,76 @@ button {
   font-size: 0;
 }
 
+.sidebar-dropdown-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 13px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #c5d0e9;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-dropdown-toggle:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: white;
+}
+
+.sidebar-dropdown-toggle svg:first-child {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-dropdown-toggle span {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-dropdown-toggle svg:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.sidebar-dropdown-open {
+  padding-left: 12px;
+  margin-top: 2px;
+}
+
+.sidebar-dropdown-open .nav-link-custom {
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.is-collapsed .sidebar-dropdown-toggle {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.is-collapsed .sidebar-dropdown-toggle span {
+  display: none;
+}
+
+.is-collapsed .sidebar-dropdown-toggle svg:last-child {
+  display: none;
+}
+
 .sidebar-nav {
   display: grid;
   gap: 4px;
@@ -1056,9 +1126,22 @@ button {
   color: #d86c52;
 }
 
-.status-pill.half-payment {
+.status-pill.half-payment,
+.status-pill.part-paid {
   background: #fff6df;
   color: #ba7b16;
+}
+
+.payment-status-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.payment-status-indicator > span:first-child {
+  color: #7c89a5;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .progress-line {
@@ -2383,6 +2466,45 @@ select.dropdown-outfit option[selected] {
 }
 
 /* ===== Daily report ===== */
+.dr-export-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #d1d9e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #192748;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #f0f4ff;
+  border-color: #355ce0;
+  color: #355ce0;
+}
+
+.export-pdf:hover {
+  background: #fff1ec;
+  border-color: #d86c52;
+  color: #d86c52;
+}
+
+.export-excel:hover {
+  background: #e8f7ee;
+  border-color: #0b8d5a;
+  color: #0b8d5a;
+}
+
 .dr-toolbar {
   display: flex;
   flex-wrap: wrap;

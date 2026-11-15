@@ -81,7 +81,7 @@ export default function CustomerFormPage() {
         ? await customersApi.update(id, payload)
         : await customersApi.create(payload)
 
-      const customerId = 'customer_id' in saved ? saved.customer_id : saved.id
+      const customerId = saved.id
 
       const result = await Swal.fire({
         title: 'Success',
@@ -133,7 +133,7 @@ export default function CustomerFormPage() {
                 <select value={form.referrer} onChange={(event) => setForm((current) => ({ ...current, referrer: event.target.value }))}>
                   <option value="">No referrer</option>
                   {customers
-                    .filter((customer) => (!isEdit || String(customer.id) !== id) && String(customer.id) !== form.referrer)
+                    .filter((customer) => !isEdit || String(customer.id) !== id)
                     .map((customer) => (
                       <option key={customer.id} value={customer.id}>{customer.name}</option>
                     ))}
