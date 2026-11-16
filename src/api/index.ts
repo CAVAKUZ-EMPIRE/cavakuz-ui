@@ -181,6 +181,10 @@ export const salesApi = {
     const { data } = await api.get(`/sales/${id}/receipt`)
     return unwrapData<SaleReceipt>(data)
   },
+  update: async (id: string | number, payload: Partial<Sale>) => {
+    const { data } = await api.put(`/sales/${id}`, payload)
+    return unwrapData<Sale>(data)
+  },
 }
 
 export const outfitSetupApi = {
@@ -209,7 +213,7 @@ export const tasksApi = {
     const { data } = await api.get(`/tasks/${id}`)
     return unwrapData<Task>(data)
   },
-  create: async (payload: { name: string; progress: number; status: string; user_id?: number | null }) => {
+  create: async (payload: { name: string; status: string; user_id?: number | null }) => {
     const { data } = await api.post('/tasks', payload)
     return unwrapData<Task>(data)
   },
@@ -252,6 +256,64 @@ export const notificationsApi = {
   markRead: async (id: string | number) => {
     const { data } = await api.post(`/notifications/${id}/read`)
     return unwrapData<NotificationItem>(data)
+  },
+  broadcastMessage: async (payload: {
+    title: string
+    message: string
+    send_sms?: boolean
+  }) => {
+    const { data } = await api.post('/send-customer-message', payload)
+    return data as {
+      message?: string
+      data: {
+        total_customers: number
+        notifications_created: number
+        sms_sent: number
+      }
+    }
+  },
+  broadcastWorkStatus: async (payload: {
+    status?: 'processing' | 'completed' | 'cancelled'
+    send_sms?: boolean
+  }) => {
+    const { data } = await api.post('/broadcast-work-status', payload)
+    return data as {
+      message?: string
+      data: {
+        status: string
+        total_orders: number
+        notifications_created: number
+        sms_sent: number
+      }
+    }
+  },
+  sendSaleStatusNotification: async (saleId: string | number, payload: {
+    status: 'processing' | 'completed' | 'cancelled'
+    send_sms?: boolean
+  }) => {
+    const { data } = await api.post(`/sales/${saleId}/notify-status`, payload)
+    return data as {
+      message?: string
+      data: {
+        notification: NotificationItem
+        sms_sent: boolean
+        sms_error?: string | null
+      }
+    }
+  },
+  sendCustomerSms: async (customerId: string | number, payload: {
+    title: string
+    message: string
+  }) => {
+    const { data } = await api.post(`/customers/${customerId}/notify`, payload)
+    return data as {
+      message?: string
+      data: {
+        notification: NotificationItem
+        sms_sent: boolean
+        sms_error?: string | null
+      }
+    }
   },
 }
 

@@ -3,23 +3,22 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { productsApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { money, prettyLabel } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { confirmDelete, errorToast } from '../../lib/swal'
 import type { Product } from '../../types'
 
 export default function ProductListPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const load = async () => {
     setLoading(true)
-    setError('')
     try {
       setProducts(await productsApi.list())
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -30,13 +29,14 @@ export default function ProductListPage() {
   }, [])
 
   const handleDelete = async (product: Product) => {
-    if (!window.confirm(`Delete ${product.name}?`)) return
+    const confirmed = await confirmDelete(`Delete "${product.name}"? This action cannot be undone.`)
+    if (!confirmed) return
 
     try {
       await productsApi.remove(product.id)
       setProducts((current) => current.filter((entry) => entry.id !== product.id))
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -46,7 +46,6 @@ export default function ProductListPage() {
       pageSubtitle="Material and service catalog for printing, design, and finishing work."
       action={<Link to="/products/new" className="primary-button"><Plus size={16} /> Add product</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? (
         <LoadingState />
       ) : (

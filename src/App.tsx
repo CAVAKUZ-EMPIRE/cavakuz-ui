@@ -17,6 +17,7 @@ import ProductShowPage from './pages/products/ProductShowPage.tsx'
 import DailyReportPage from './pages/reports/DailyReportPage.tsx'
 import FinancialReportPage from './pages/reports/FinancialReportPage.tsx'
 import SaleCreatePage from './pages/sales/SaleCreatePage.tsx'
+import SaleEditPage from './pages/sales/SaleEditPage.tsx'
 import SaleReceiptPage from './pages/sales/SaleReceiptPage.tsx'
 import SaleShowPage from './pages/sales/SaleShowPage.tsx'
 import SalesListPage from './pages/sales/SalesListPage.tsx'
@@ -59,6 +60,7 @@ function App() {
         <Route path="/sales" element={<SalesListPage />} />
         <Route path="/sales/new" element={<SaleCreatePage />} />
         <Route path="/sales/:id" element={<SaleShowPage />} />
+        <Route path="/sales/:id/edit" element={<SaleEditPage />} />
         <Route path="/sales/:id/receipt" element={<SaleReceiptPage />} />
 
         <Route path="/expenses" element={<ExpensesPage />} />

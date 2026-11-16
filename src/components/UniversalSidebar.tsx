@@ -1,10 +1,10 @@
 import { ChevronDown, ChevronUp, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import Swal from 'sweetalert2'
 import { useAuth } from '../auth/AuthContext'
 import { navigation } from '../constants/navigation'
 import { initials } from '../lib/format'
+import { confirmAction } from '../lib/swal'
 import logo from '/images/logo/logo.jpeg'
 
 type UniversalSidebarProps = {
@@ -37,17 +37,14 @@ export default function UniversalSidebar({ sidebarOpen, collapsed, isMobile, onC
   }, [sidebarOpen, onClose])
 
   const handleLogout = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirmAction({
       title: 'Logout',
       text: 'Are you sure you want to logout?',
-      icon: 'question',
-      showCancelButton: true,
-      showConfirmButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
     })
 
-    if (result.isConfirmed) {
+    if (confirmed) {
       await logout()
       navigate('/login', { replace: true })
     }

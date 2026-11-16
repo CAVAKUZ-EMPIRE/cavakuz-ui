@@ -2,9 +2,9 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { customersApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import { getErrorMessage } from '../../lib/http'
-import Swal from 'sweetalert2'
+import { errorToast, successModal } from '../../lib/swal'
 const emptyForm = {
   name: '',
   phone_number: '',
@@ -22,7 +22,6 @@ export default function CustomerFormPage() {
   const [customers, setCustomers] = useState<{ id: number; name: string }[]>([])
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const loadCustomers = async () => {
@@ -30,7 +29,7 @@ export default function CustomerFormPage() {
         const nextCustomers = await customersApi.list()
         setCustomers(nextCustomers.map(({ id, name }) => ({ id, name })))
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       }
     }
 
@@ -55,7 +54,7 @@ export default function CustomerFormPage() {
           referrer: customer.referrer ? String(customer.referrer) : '',
         })
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -66,7 +65,6 @@ export default function CustomerFormPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setSaving(true)
-    setError('')
     const payload = {
       name: form.name,
       phone_number: form.phone_number,
@@ -77,23 +75,14 @@ export default function CustomerFormPage() {
     }
 
     try {
-      const saved = isEdit && id
+      isEdit && id
         ? await customersApi.update(id, payload)
         : await customersApi.create(payload)
 
-      const customerId = saved.id
-
-      const result = await Swal.fire({
-        title: 'Success',
-        text: isEdit ? 'Customer updated successfully' : 'Customer created successfully',
-        icon: 'success',
-      })
-
-      if (result.isConfirmed) {
-        navigate(`/customers/${customerId}`)
-      }
+      await successModal(isEdit ? 'Customer updated successfully.' : 'Customer created successfully.')
+      navigate('/customers')
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -105,7 +94,6 @@ export default function CustomerFormPage() {
       pageSubtitle="Keep client contact details accurate and complete."
       action={<Link to="/customers" className="secondary-button">Back to customers</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? (
         <LoadingState />
       ) : (

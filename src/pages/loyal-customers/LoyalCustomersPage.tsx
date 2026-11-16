@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { loyalCustomersApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { LoyalCustomer } from '../../types'
 
 export default function LoyalCustomersPage() {
@@ -12,16 +13,14 @@ export default function LoyalCustomersPage() {
   const query = searchParams.get('q') ?? ''
   const [customers, setCustomers] = useState<LoyalCustomer[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
       setLoading(true)
-      setError('')
       try {
         setCustomers(await loyalCustomersApi.list())
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -44,7 +43,6 @@ export default function LoyalCustomersPage() {
       pageTitle="Loyal Customers"
       pageSubtitle="Top customers ranked by referrals and purchases."
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? (
         <LoadingState label="Loading loyal customers..." />
       ) : (

@@ -5,16 +5,16 @@ import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import { dashboardApi, expensesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { money } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { Expense, FinancialMonth } from '../../types'
 
 export default function FinancialReportPage() {
   const [months, setMonths] = useState<FinancialMonth[]>([])
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
@@ -26,7 +26,7 @@ export default function FinancialReportPage() {
         setMonths(report)
         setExpenses(nextExpenses)
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -91,7 +91,6 @@ export default function FinancialReportPage() {
 
   return (
     <AppShell pageTitle="Financial report" pageSubtitle="Monthly revenue grouped by the reports API.">
-      {error && <Alert>{error}</Alert>}
       {loading ? <LoadingState /> : (
         <>
           <div className="dr-export-buttons" role="group" aria-label="Export options">

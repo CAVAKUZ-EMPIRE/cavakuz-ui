@@ -4,24 +4,23 @@ import { Link } from 'react-router-dom'
 import { inventoryApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import OutfitSetupChips from '../../components/OutfitSetupChips'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { money } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { confirmDelete, errorToast } from '../../lib/swal'
 import { inventorySetup, inventoryTitle } from '../../lib/outfit'
 import type { InventoryItem } from '../../types'
 
 export default function InventoryListPage() {
   const [items, setItems] = useState<InventoryItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const load = async () => {
     setLoading(true)
-    setError('')
     try {
       setItems(await inventoryApi.list())
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -32,12 +31,13 @@ export default function InventoryListPage() {
   }, [])
 
   const handleDelete = async (item: InventoryItem) => {
-    if (!window.confirm(`Delete ${inventoryTitle(item)}?`)) return
+    const confirmed = await confirmDelete(`Delete "${inventoryTitle(item)}"? This action cannot be undone.`)
+    if (!confirmed) return
     try {
       await inventoryApi.remove(item.id)
       setItems((current) => current.filter((entry) => entry.id !== item.id))
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -47,7 +47,6 @@ export default function InventoryListPage() {
       pageSubtitle="Services and stock items from the catalogue API."
       action={<Link to="/inventory/new" className="primary-button"><Plus size={16} /> Add item</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? (
         <LoadingState />
       ) : (

@@ -4,12 +4,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { customersApi, inventoryApi, outfitSetupApi, salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import OutfitSetupChips from '../../components/OutfitSetupChips'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import { money, prettyLabel } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { infoModal, errorToast } from '../../lib/swal'
 import { inventoryOptionLabel, outfitHeadline } from '../../lib/outfit'
 import type { Customer, InventoryItem, OutfitSetupGroup } from '../../types'
-import Swal from 'sweetalert2'
 type InventoryLine = { type: 'inventory'; inventory_id: string; quantity: string }
 type OutfitLine = { type: 'outfit'; quantity: string; base_price: string; outfit_setup: Record<string, string> }
 type SaleLine = InventoryLine | OutfitLine
@@ -45,7 +45,6 @@ export default function SaleCreatePage() {
   const [outfitQuantity, setOutfitQuantity] = useState('1')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
@@ -62,7 +61,7 @@ export default function SaleCreatePage() {
         setCustomerId(nextCustomers[0] ? String(nextCustomers[0].id) : '')
         setLines([{ type: 'inventory', inventory_id: nextInventory[0] ? String(nextInventory[0].id) : '', quantity: '1' }])
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -101,15 +100,9 @@ export default function SaleCreatePage() {
     const hasMissingSelection = requiredFields.some((field) => !outfitSelection[field])
   
     if (requiredFields.length > 0 && hasMissingSelection) {
-      // setError('')
-      Swal.fire({
-        title: "Info",
-        icon: "info",
-        text:"Please complete every outfit option before adding the custom outfit line."})
+      infoModal('Incomplete Selection', 'Please complete every outfit option before adding the custom outfit line.')
       return
     }
-
-    setError('')
     setLines((current) => [...current, {
       type: 'outfit',
       quantity: outfitQuantity,
@@ -124,7 +117,6 @@ export default function SaleCreatePage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setSaving(true)
-    setError('')
 
     try {
       const items = lines.map((line) => {
@@ -175,7 +167,7 @@ export default function SaleCreatePage() {
       })
       navigate(`/sales/${sale.id}/receipt`)
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -187,7 +179,6 @@ export default function SaleCreatePage() {
       pageSubtitle="Select a customer, add inventory or a custom outfit configuration, and capture payment details."
       action={<Link to="/sales" className="secondary-button">Back to sales</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? <LoadingState /> : (
         <section className="panel module-panel">
           <form className="field-form" onSubmit={(event) => void handleSubmit(event)}>

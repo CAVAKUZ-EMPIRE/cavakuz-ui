@@ -3,23 +3,23 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, prettyLabel, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { Sale } from '../../types'
 
 export default function SalesListPage() {
   const [sales, setSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
       try {
         setSales(await salesApi.list())
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -33,7 +33,6 @@ export default function SalesListPage() {
       pageSubtitle="Recorded purchases, payments, and receipts."
       action={<Link to="/sales/new" className="primary-button"><Plus size={16} /> New sale</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? <LoadingState /> : (
         <section className="panel module-panel">
           <div className="table-responsive compact-table">
@@ -43,6 +42,7 @@ export default function SalesListPage() {
                   <th>Sale</th>
                   <th>Customer</th>
                   <th>Method</th>
+                  <th>Job status</th>
                   <th>Status</th>
                   <th>Date</th>
                   <th>Total</th>
@@ -55,12 +55,14 @@ export default function SalesListPage() {
                     <td>#{sale.invoice_number ?? sale.id}</td>
                     <td>{sale.customer?.name ?? sale.customer_name ?? `Customer #${sale.customer_id ?? '—'}`}</td>
                     <td>{prettyLabel(sale.payment_method ?? sale.payment_status ?? 'pending')}</td>
+                    <td>{sale.job_status ? <StatusPill value={sale.job_status} /> : '—'}</td>
                     <td><StatusPill value={sale.payment_status ?? sale.status ?? 'pending'} /></td>
                     <td>{formatDate(sale.transaction_date ?? sale.created_at ?? '')}</td>
                     <td>{money(saleTotal(sale))}</td>
                     <td>
                       <div className="table-actions">
                         <Link className="table-button" to={`/sales/${sale.id}`}>View</Link>
+                        <Link className="table-button" to={`/sales/${sale.id}/edit`}>Edit</Link>
                         <Link className="table-button" to={`/sales/${sale.id}/receipt`}>Receipt</Link>
                       </div>
                     </td>
@@ -68,7 +70,7 @@ export default function SalesListPage() {
                 ))}
                 {!sales.length && (
                   <tr>
-                    <td colSpan={7}><EmptyState label="No sales yet." /></td>
+                    <td colSpan={8}><EmptyState label="No sales yet." /></td>
                   </tr>
                 )}
               </tbody>

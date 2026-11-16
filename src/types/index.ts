@@ -75,6 +75,8 @@ export type SaleItem = {
 export type PaymentMethod = 'cash' | 'card' | 'transfer' | 'mobile_money'
 export type PaymentStatus = 'full_payment' | 'half_payment' | 'not_paid' | 'pending' | 'partial' | 'paid' | 'part_paid'
 
+export type JobStatus = 'not_started' | 'queued' | 'in_progress' | 'ready_for_pickup' | 'delivered' | 'cancelled'
+
 export type Sale = {
   id: number
   invoice_number?: string
@@ -85,6 +87,7 @@ export type Sale = {
   payment_method?: PaymentMethod | string
   payment_status?: PaymentStatus | string
   status?: string
+  job_status?: JobStatus | string | null
   transaction_date?: string
   created_at?: string
   notes: string | null

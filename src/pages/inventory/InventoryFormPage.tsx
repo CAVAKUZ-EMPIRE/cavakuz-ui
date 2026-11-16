@@ -2,8 +2,9 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { inventoryApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast, successToast } from '../../lib/swal'
 
 const emptyForm = {
   name: '',
@@ -20,7 +21,6 @@ export default function InventoryFormPage() {
   const [form, setForm] = useState(emptyForm)
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     if (!id) return
@@ -35,7 +35,7 @@ export default function InventoryFormPage() {
           description: item.description ?? '',
         })
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -46,7 +46,6 @@ export default function InventoryFormPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setSaving(true)
-    setError('')
     const payload = {
       name: form.name,
       category: form.category || null,
@@ -58,9 +57,10 @@ export default function InventoryFormPage() {
       const saved = isEdit && id
         ? await inventoryApi.update(id, payload)
         : await inventoryApi.create(payload)
+      successToast(isEdit ? 'Item updated.' : 'Item created.')
       navigate(`/inventory/${saved.id}`)
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -72,7 +72,6 @@ export default function InventoryFormPage() {
       pageSubtitle="Prices and stock quantities are used when recording sales."
       action={<Link to="/inventory" className="secondary-button">Back to inventory</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? <LoadingState /> : (
         <section className="panel module-panel">
           <form className="field-form" onSubmit={(event) => void handleSubmit(event)}>

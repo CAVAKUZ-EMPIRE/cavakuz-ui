@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { productsApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import { money, prettyLabel } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { Product } from '../../types'
 
 export default function ProductShowPage() {
   const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ProductShowPage() {
       try {
         setProduct(await productsApi.get(id))
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -35,7 +35,6 @@ export default function ProductShowPage() {
       pageSubtitle="Detailed product information for pricing and stock tracking."
       action={product ? <Link to={`/products/${product.id}/edit`} className="primary-button">Edit product</Link> : undefined}
     >
-      {error && <Alert>{error}</Alert>}
       {loading || !product ? <LoadingState /> : (
         <section className="module-grid">
           <div className="panel module-panel">
