@@ -43,6 +43,7 @@ export default function SalesListPage() {
                   <th>Sale</th>
                   <th>Customer</th>
                   <th>Method</th>
+                  <th>Job status</th>
                   <th>Status</th>
                   <th>Date</th>
                   <th>Total</th>
@@ -55,12 +56,14 @@ export default function SalesListPage() {
                     <td>#{sale.invoice_number ?? sale.id}</td>
                     <td>{sale.customer?.name ?? sale.customer_name ?? `Customer #${sale.customer_id ?? '—'}`}</td>
                     <td>{prettyLabel(sale.payment_method ?? sale.payment_status ?? 'pending')}</td>
+                    <td>{sale.job_status ? <StatusPill value={sale.job_status} /> : '—'}</td>
                     <td><StatusPill value={sale.payment_status ?? sale.status ?? 'pending'} /></td>
                     <td>{formatDate(sale.transaction_date ?? sale.created_at ?? '')}</td>
                     <td>{money(saleTotal(sale))}</td>
                     <td>
                       <div className="table-actions">
                         <Link className="table-button" to={`/sales/${sale.id}`}>View</Link>
+                        <Link className="table-button" to={`/sales/${sale.id}/edit`}>Edit</Link>
                         <Link className="table-button" to={`/sales/${sale.id}/receipt`}>Receipt</Link>
                       </div>
                     </td>
@@ -68,7 +71,7 @@ export default function SalesListPage() {
                 ))}
                 {!sales.length && (
                   <tr>
-                    <td colSpan={7}><EmptyState label="No sales yet." /></td>
+                    <td colSpan={8}><EmptyState label="No sales yet." /></td>
                   </tr>
                 )}
               </tbody>

@@ -1,6 +1,7 @@
+import { Bell } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { customersApi } from '../../api'
+import { customersApi, notificationsApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import { Alert, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
@@ -14,7 +15,13 @@ export default function CustomerShowPage() {
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [referrerCustomer, setReferrerCustomer] = useState<Customer | null>(null)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(true)
+
+  const [showNotify, setShowNotify] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [notifyTitle, setNotifyTitle] = useState('')
+  const [notifyMessage, setNotifyMessage] = useState('')
 
   useEffect(() => {
     if (!id) return
@@ -48,6 +55,32 @@ export default function CustomerShowPage() {
     }
   }
 
+  const handleNotify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!id || !notifyTitle.trim() || !notifyMessage.trim()) return
+
+    setSending(true)
+    setError('')
+    setSuccess('')
+    try {
+      const result = await notificationsApi.sendCustomerSms(id, {
+        title: notifyTitle.trim(),
+        message: notifyMessage.trim(),
+      })
+      setSuccess(
+        `Notification sent to ${customer?.name}.${result.data.sms_sent ? ' SMS delivered.' : ' SMS was not sent.'}` +
+        (result.data.sms_error ? ` Error: ${result.data.sms_error}` : '')
+      )
+      setNotifyTitle('')
+      setNotifyMessage('')
+      setShowNotify(false)
+    } catch (err) {
+      setError(getErrorMessage(err))
+    } finally {
+      setSending(false)
+    }
+  }
+
   return (
     <AppShell
       pageTitle="Customer profile"
@@ -56,12 +89,64 @@ export default function CustomerShowPage() {
         customer ? (
           <div className="action-row">
             <Link to={`/customers/${customer.id}/edit`} className="primary-button">Edit</Link>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => { setShowNotify(true); setError(''); setSuccess(''); }}
+            >
+              <Bell size={16} /> Send SMS
+            </button>
             <button type="button" className="btn btn-danger" onClick={() => void handleDelete()}>Delete</button>
           </div>
         ) : undefined
       }
     >
       {error && <Alert>{error}</Alert>}
+      {success && <Alert tone="success">{success}</Alert>}
+
+      {showNotify && (
+        <section className="panel module-panel" style={{ marginBottom: 16 }}>
+          <h3 style={{ margin: '0 0 12px' }}>Send SMS to {customer?.name}</h3>
+          <form onSubmit={handleNotify}>
+            <div className="field-grid">
+              <label>
+                <span>Title</span>
+                <input
+                  type="text"
+                  value={notifyTitle}
+                  onChange={(e) => setNotifyTitle(e.target.value)}
+                  placeholder="Order update"
+                  required
+                />
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea
+                  value={notifyMessage}
+                  onChange={(e) => setNotifyMessage(e.target.value)}
+                  placeholder="Your order has been completed..."
+                  rows={3}
+                  required
+                />
+              </label>
+            </div>
+            <div className="action-row" style={{ marginTop: 16 }}>
+              <button type="submit" className="primary-button" disabled={sending}>
+                {sending ? 'Sending...' : 'Send SMS'}
+              </button>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setShowNotify(false)}
+                disabled={sending}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+      )}
+
       {loading || !customer ? (
         <LoadingState />
       ) : (
