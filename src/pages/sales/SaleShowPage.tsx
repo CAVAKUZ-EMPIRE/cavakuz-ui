@@ -3,18 +3,17 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { notificationsApi, salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import SaleItemLabel from '../../components/SaleItemLabel'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, prettyLabel, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast, successToast } from '../../lib/swal'
 import type { Sale } from '../../types'
 
 export default function SaleShowPage() {
   const { id } = useParams()
   const [sale, setSale] = useState<Sale | null>(null)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(true)
   const [showNotify, setShowNotify] = useState(false)
   const [sending, setSending] = useState(false)
@@ -27,7 +26,7 @@ export default function SaleShowPage() {
       try {
         setSale(await salesApi.get(id))
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -40,20 +39,18 @@ export default function SaleShowPage() {
     if (!id) return
 
     setSending(true)
-    setError('')
-    setSuccess('')
     try {
       const result = await notificationsApi.sendSaleStatusNotification(id, {
         status: notifyStatus,
         send_sms: notifySms,
       })
-      setSuccess(
+      successToast(
         `Notification sent.${result.data.sms_sent ? ' SMS delivered.' : ' SMS was not sent.'}` +
         (result.data.sms_error ? ` Error: ${result.data.sms_error}` : '')
       )
       setShowNotify(false)
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSending(false)
     }
@@ -72,15 +69,13 @@ export default function SaleShowPage() {
           <button
             type="button"
             className="secondary-button"
-            onClick={() => { setShowNotify(true); setError(''); setSuccess(''); }}
+            onClick={() => setShowNotify(true)}
           >
             <Bell size={16} /> Notify customer
           </button>
         </div>
       ) : undefined}
     >
-      {error && <Alert>{error}</Alert>}
-      {success && <Alert tone="success">{success}</Alert>}
 
       {showNotify && (
         <section className="panel module-panel" style={{ marginBottom: 16 }}>

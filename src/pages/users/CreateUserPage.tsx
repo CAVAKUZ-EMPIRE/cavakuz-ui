@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { authApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert } from '../../components/PageState'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast, successToast } from '../../lib/swal'
 
 export default function CreateUserPage() {
   const [form, setForm] = useState({
@@ -13,17 +13,13 @@ export default function CreateUserPage() {
     role: 'assistant' as 'admin' | 'assistant',
   })
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setSaving(true)
-    setError('')
-    setSuccess('')
     try {
       const user = await authApi.createUser(form)
-      setSuccess(`Created ${user.name} as ${user.role}.`)
+      successToast(`Created ${user.name} as ${user.role}.`)
       setForm({
         name: '',
         email: '',
@@ -32,7 +28,7 @@ export default function CreateUserPage() {
         role: 'assistant',
       })
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -40,8 +36,6 @@ export default function CreateUserPage() {
 
   return (
     <AppShell pageTitle="Create user" pageSubtitle="Admin-only endpoint for adding workspace accounts.">
-      {error && <Alert>{error}</Alert>}
-      {success && <Alert tone="success">{success}</Alert>}
       <section className="panel module-panel">
         <form className="field-form" onSubmit={(event) => void handleSubmit(event)}>
           <div className="field-grid">

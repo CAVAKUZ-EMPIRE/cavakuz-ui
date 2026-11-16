@@ -213,7 +213,7 @@ export const tasksApi = {
     const { data } = await api.get(`/tasks/${id}`)
     return unwrapData<Task>(data)
   },
-  create: async (payload: { name: string; progress: number; status: string; user_id?: number | null }) => {
+  create: async (payload: { name: string; status: string; user_id?: number | null }) => {
     const { data } = await api.post('/tasks', payload)
     return unwrapData<Task>(data)
   },

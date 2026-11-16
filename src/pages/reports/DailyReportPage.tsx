@@ -7,10 +7,11 @@ import { dashboardApi } from '../../api'
 import AppShell from '../../components/AppShell'
 import DailyBarChart from '../../components/DailyBarChart'
 import PanelHeading from '../../components/PanelHeading'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import StatCard from '../../components/StatCard'
 import { money } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { DailyReport } from '../../types'
 
 type DateRange = { from: string; to: string }
@@ -48,7 +49,6 @@ export default function DailyReportPage() {
   const [range, setRange] = useState<DateRange>(() => lastDays(30))
   const [report, setReport] = useState<DailyReport | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     let ignore = false
@@ -58,9 +58,8 @@ export default function DailyReportPage() {
         const data = await dashboardApi.dailyReport(range)
         if (ignore) return
         setReport(data)
-        setError('')
       } catch (err) {
-        if (!ignore) setError(getErrorMessage(err))
+        if (!ignore) errorToast(getErrorMessage(err))
       } finally {
         if (!ignore) setLoading(false)
       }
@@ -192,7 +191,6 @@ export default function DailyReportPage() {
         </div>
       </section>
 
-      {error && <Alert>{error}</Alert>}
       {loading && !report ? <LoadingState label="Loading daily report..." /> : report && totals && (
         <div className={loading ? 'dr-content is-refreshing' : 'dr-content'}>
           <section className="stats-grid">

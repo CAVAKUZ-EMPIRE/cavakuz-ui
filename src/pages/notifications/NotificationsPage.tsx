@@ -2,16 +2,15 @@ import { Plus, Send } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { notificationsApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { formatDate } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast, successToast } from '../../lib/swal'
 import type { NotificationItem } from '../../types'
 
 export default function NotificationsPage() {
   const [items, setItems] = useState<NotificationItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   const [showBroadcastForm, setShowBroadcastForm] = useState(false)
   const [showStatusForm, setShowStatusForm] = useState(false)
@@ -26,11 +25,10 @@ export default function NotificationsPage() {
 
   const load = async () => {
     setLoading(true)
-    setError('')
     try {
       setItems(await notificationsApi.list())
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -45,7 +43,7 @@ export default function NotificationsPage() {
       const updated = await notificationsApi.markRead(item.id)
       setItems((current) => current.map((entry) => entry.id === item.id ? updated : entry))
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -54,15 +52,13 @@ export default function NotificationsPage() {
     if (!broadcastTitle.trim() || !broadcastMessage.trim()) return
 
     setSending(true)
-    setError('')
-    setSuccess('')
     try {
       const result = await notificationsApi.broadcastMessage({
         title: broadcastTitle.trim(),
         message: broadcastMessage.trim(),
         send_sms: broadcastSms,
       })
-      setSuccess(
+      successToast(
         `Sent to ${result.data.total_customers} customers. ` +
         `${result.data.notifications_created} notifications created, ${result.data.sms_sent} SMS sent.`
       )
@@ -71,7 +67,7 @@ export default function NotificationsPage() {
       setShowBroadcastForm(false)
       await load()
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSending(false)
     }
@@ -80,21 +76,19 @@ export default function NotificationsPage() {
   const handleBroadcastStatus = async (e: React.FormEvent) => {
     e.preventDefault()
     setSending(true)
-    setError('')
-    setSuccess('')
     try {
       const result = await notificationsApi.broadcastWorkStatus({
         status: workStatus,
         send_sms: statusSms,
       })
-      setSuccess(
+      successToast(
         `Status "${result.data.status}" sent to ${result.data.total_orders} orders. ` +
         `${result.data.notifications_created} notifications created, ${result.data.sms_sent} SMS sent.`
       )
       setShowStatusForm(false)
       await load()
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSending(false)
     }
@@ -102,21 +96,19 @@ export default function NotificationsPage() {
 
   return (
     <AppShell pageTitle="Notifications" pageSubtitle="Send job status updates and messages to your customers.">
-      {error && <Alert>{error}</Alert>}
-      {success && <Alert tone="success">{success}</Alert>}
 
       <div className="action-row" style={{ marginBottom: 16 }}>
         <button
           type="button"
           className="primary-button"
-          onClick={() => { setShowBroadcastForm(true); setShowStatusForm(false); setError(''); setSuccess(''); }}
+          onClick={() => { setShowBroadcastForm(true); setShowStatusForm(false); }}
         >
           <Send size={16} /> Send message to all
         </button>
         <button
           type="button"
           className="secondary-button"
-          onClick={() => { setShowStatusForm(true); setShowBroadcastForm(false); setError(''); setSuccess(''); }}
+          onClick={() => { setShowStatusForm(true); setShowBroadcastForm(false); }}
         >
           <Plus size={16} /> Notify by order status
         </button>

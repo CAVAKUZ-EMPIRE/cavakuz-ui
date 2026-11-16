@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import ReceiptDocument, { type PaperSize } from '../../components/ReceiptDocument'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { SaleReceipt } from '../../types'
 
 const PAPER_SIZES: PaperSize[] = ['A4', 'A5']
@@ -14,7 +15,6 @@ const PAPER_STORAGE_KEY = 'cavakuz.receipt.paper'
 export default function SaleReceiptPage() {
   const { id } = useParams()
   const [receipt, setReceipt] = useState<SaleReceipt | null>(null)
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [paper, setPaper] = useState<PaperSize>(() => (localStorage.getItem(PAPER_STORAGE_KEY) === 'A5' ? 'A5' : 'A4'))
 
@@ -24,7 +24,7 @@ export default function SaleReceiptPage() {
       try {
         setReceipt(await salesApi.receipt(id))
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -63,7 +63,6 @@ export default function SaleReceiptPage() {
         </div>
       }
     >
-      {error && <Alert>{error}</Alert>}
       {loading || !receipt ? <LoadingState /> : (
         <div className="rdoc-stage">
           <ReceiptDocument receipt={receipt} paper={paper} />

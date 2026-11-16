@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { inventoryApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import { money } from '../../lib/format'
 import { inventorySetup, inventoryTitle } from '../../lib/outfit'
 import OutfitSetupChips from '../../components/OutfitSetupChips'
 import { getErrorMessage } from '../../lib/http'
+import { confirmDelete, errorToast } from '../../lib/swal'
 import type { InventoryItem } from '../../types'
 
 export default function InventoryShowPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [item, setItem] = useState<InventoryItem | null>(null)
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function InventoryShowPage() {
       try {
         setItem(await inventoryApi.get(id))
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -31,12 +31,14 @@ export default function InventoryShowPage() {
   }, [id])
 
   const handleDelete = async () => {
-    if (!item || !window.confirm(`Delete ${inventoryTitle(item)}?`)) return
+    if (!item) return
+    const confirmed = await confirmDelete(`Delete "${inventoryTitle(item)}"? This action cannot be undone.`)
+    if (!confirmed) return
     try {
       await inventoryApi.remove(item.id)
       navigate('/inventory')
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -53,7 +55,6 @@ export default function InventoryShowPage() {
         ) : undefined
       }
     >
-      {error && <Alert>{error}</Alert>}
       {loading || !item ? <LoadingState /> : (
         <section className="panel module-panel">
           <div className="summary-stack">

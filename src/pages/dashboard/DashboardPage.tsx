@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom'
 import { dashboardApi, expensesApi, tasksApi } from '../../api'
 import { useAuth } from '../../auth/AuthContext'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import RevenueBarChart from '../../components/RevenueBarChart'
 import PanelHeading from '../../components/PanelHeading'
 import StatCard from '../../components/StatCard'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { DashboardSummary, Expense, FinancialMonth, Task } from '../../types'
 
 export default function DashboardPage() {
@@ -20,12 +21,10 @@ export default function DashboardPage() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [months, setMonths] = useState<FinancialMonth[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
       setLoading(true)
-      setError('')
       try {
         const [dashboard, nextTasks, nextExpenses, nextMonths] = await Promise.all([
           isAdmin ? dashboardApi.admin() : dashboardApi.summary(),
@@ -38,7 +37,7 @@ export default function DashboardPage() {
         setExpenses(nextExpenses)
         setMonths(nextMonths)
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -59,7 +58,6 @@ export default function DashboardPage() {
           : 'Stay on top of customers, stock, tasks, and payments.'
       }
     >
-      {error && <Alert>{error}</Alert>}
       {loading || !summary ? (
         <LoadingState label="Loading dashboard..." />
       ) : (

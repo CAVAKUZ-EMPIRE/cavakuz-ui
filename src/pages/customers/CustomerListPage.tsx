@@ -3,25 +3,23 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { customersApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { avatarTone, initials } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { confirmDelete, errorToast } from '../../lib/swal'
 import type { Customer } from '../../types'
-import Swal from 'sweetalert2'
 export default function CustomerListPage() {
   const [searchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const load = async () => {
     setLoading(true)
-    setError('')
     try {
       setCustomers(await customersApi.list())
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -42,23 +40,14 @@ export default function CustomerListPage() {
   )
 
   const handleDelete = async (customer: Customer) => {
-    const result = await Swal.fire({
-      title: 'Delete customer?',
-      text: `Are you sure you want to delete ${customer.name}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-    })
-
-    if (!result.isConfirmed) return
+    const confirmed = await confirmDelete(`Delete "${customer.name}"? This action cannot be undone.`)
+    if (!confirmed) return
 
     try {
       await customersApi.remove(customer.id)
       setCustomers((current) => current.filter((item) => item.id !== customer.id))
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -72,7 +61,6 @@ export default function CustomerListPage() {
         </Link>
       }
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? (
         <LoadingState label="Loading customers..." />
       ) : (

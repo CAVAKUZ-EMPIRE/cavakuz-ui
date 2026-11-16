@@ -2,10 +2,11 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { customersApi, salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, LoadingState } from '../../components/PageState'
+import { LoadingState } from '../../components/PageState'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast, successToast } from '../../lib/swal'
 import type { Customer, JobStatus, Sale } from '../../types'
 
 const JOB_STATUS_OPTIONS: { value: JobStatus | ''; label: string }[] = [
@@ -50,7 +51,6 @@ export default function SaleEditPage() {
   const [sale, setSale] = useState<Sale | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   const [customers, setCustomers] = useState<Customer[]>([])
 
@@ -83,7 +83,7 @@ export default function SaleEditPage() {
           setNotes(saleData.notes ?? '')
         }
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -96,7 +96,6 @@ export default function SaleEditPage() {
     if (!id) return
 
     setSaving(true)
-    setError('')
 
     const payload: Partial<Sale> = {}
     if (customerId) payload.customer_id = Number(customerId)
@@ -110,9 +109,10 @@ export default function SaleEditPage() {
 
     try {
       const updated = await salesApi.update(id, payload)
+      successToast('Sale updated.')
       navigate(`/sales/${updated.id}`)
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -124,7 +124,6 @@ export default function SaleEditPage() {
       pageSubtitle="Update sale details, payment, and job status."
       action={<Link to={id ? `/sales/${id}` : '/sales'} className="secondary-button">Back to sale</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading || !sale ? (
         <LoadingState />
       ) : (

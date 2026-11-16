@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { expensesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import { formatDate, money } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { confirmDelete, errorToast, successToast } from '../../lib/swal'
 import type { Expense } from '../../types'
 
 export default function ExpensesPage() {
@@ -13,16 +14,13 @@ export default function ExpensesPage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   const load = async () => {
     setLoading(true)
-    setError('')
     try {
       setExpenses(await expensesApi.list())
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -41,20 +39,18 @@ export default function ExpensesPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setSaving(true)
-    setError('')
-    setSuccess('')
     try {
       if (editingId) {
         await expensesApi.update(editingId, { name, total })
-        setSuccess('Expense updated.')
+        successToast('Expense updated.')
       } else {
         await expensesApi.create({ name, total })
-        setSuccess('Expense created.')
+        successToast('Expense created.')
       }
       resetForm()
       await load()
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -67,12 +63,13 @@ export default function ExpensesPage() {
   }
 
   const handleDelete = async (expense: Expense) => {
-    if (!window.confirm(`Delete ${expense.name}?`)) return
+    const confirmed = await confirmDelete(`Delete "${expense.name}"? This action cannot be undone.`)
+    if (!confirmed) return
     try {
       await expensesApi.remove(expense.id)
       setExpenses((current) => current.filter((item) => item.id !== expense.id))
     } catch (err) {
-      setError(getErrorMessage(err))
+      errorToast(getErrorMessage(err))
     }
   }
 
@@ -80,8 +77,6 @@ export default function ExpensesPage() {
 
   return (
     <AppShell pageTitle="Expenses" pageSubtitle="Track outgoing costs against sales revenue.">
-      {error && <Alert>{error}</Alert>}
-      {success && <Alert tone="success">{success}</Alert>}
       <section className="module-grid two-column">
         <div className="panel module-panel">
           <div className="panel-heading">

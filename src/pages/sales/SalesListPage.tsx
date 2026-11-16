@@ -3,23 +3,23 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { salesApi } from '../../api'
 import AppShell from '../../components/AppShell'
-import { Alert, EmptyState, LoadingState } from '../../components/PageState'
+import { EmptyState, LoadingState } from '../../components/PageState'
 import StatusPill from '../../components/StatusPill'
 import { formatDate, money, prettyLabel, saleTotal } from '../../lib/format'
 import { getErrorMessage } from '../../lib/http'
+import { errorToast } from '../../lib/swal'
 import type { Sale } from '../../types'
 
 export default function SalesListPage() {
   const [sales, setSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const load = async () => {
       try {
         setSales(await salesApi.list())
       } catch (err) {
-        setError(getErrorMessage(err))
+        errorToast(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -33,7 +33,6 @@ export default function SalesListPage() {
       pageSubtitle="Recorded purchases, payments, and receipts."
       action={<Link to="/sales/new" className="primary-button"><Plus size={16} /> New sale</Link>}
     >
-      {error && <Alert>{error}</Alert>}
       {loading ? <LoadingState /> : (
         <section className="panel module-panel">
           <div className="table-responsive compact-table">
